@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>U.E. "SAN VICENTE DE PAUL" — Plataforma Académica</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root{
+  --azul:#0b3d91; --azul2:#1257c4; --azulclaro:#e8f0fe;
+  --rojo:#c0392b; --dorado:#f1c40f; --verde:#27ae60; --naranja:#e67e22;
+  --gris:#5f6368; --fondo:#f4f6f9; --blanco:#ffffff; --borde:#dfe3ea;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;
+  -webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--fondo);color:#202124}
+a{color:var(--azul2)}
+img{max-width:100%}
+
+/* ===== LOGIN ===== */
+#loginPantalla{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column}
+.banner{min-height:200px;height:34vh;background:linear-gradient(120deg,#0b3d91 0%,#1257c4 55%,#1e6ae0 100%);
+  position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.banner::after{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 18px,transparent 18px 36px)}
+.bannerTxt{text-align:center;color:#fff;z-index:2;padding:14px 10px;max-width:820px}
+.logoBanner{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid #fff;
+  box-shadow:0 5px 15px rgba(0,0,0,.35);background:#fff;margin-bottom:8px}
+.bannerTxt h1{font-size:clamp(17px,3.6vw,36px);letter-spacing:.5px;text-shadow:0 3px 8px rgba(0,0,0,.4)}
+.bannerTxt p{font-size:clamp(12px,1.6vw,17px);opacity:.92;margin-top:6px}
+.bannerTxt .motto{color:var(--dorado);font-weight:600;letter-spacing:2px;margin-top:8px;font-size:clamp(10px,1.4vw,15px)}
+.loginBody{flex:1;display:flex;justify-content:center;align-items:flex-start;background:var(--fondo);
+  padding:30px 14px;overflow:auto}
+.loginCard{background:#fff;width:100%;max-width:940px;border-radius:12px;box-shadow:0 8px 30px rgba(11,61,145,.15);
+  display:grid;grid-template-columns:1.1fr .9fr;overflow:hidden;margin-top:-64px;z-index:3;position:relative}
+.loginForm{padding:32px 36px}
+.loginForm h2{color:var(--azul);font-size:20px;margin-bottom:22px;border-bottom:3px solid var(--dorado);display:inline-block;padding-bottom:6px}
+.campo{margin-bottom:16px}
+.campo label{display:block;font-size:13px;color:var(--gris);margin-bottom:6px;font-weight:600}
+.campo input,.campo select,.campo textarea{width:100%;padding:11px 12px;border:1px solid var(--borde);
+  border-radius:6px;font-size:14px;outline:none;transition:.2s;background:#fff}
+.campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--azul2);
+  box-shadow:0 0 0 3px rgba(18,87,196,.12)}
+.btn{display:inline-block;border:none;cursor:pointer;padding:11px 20px;border-radius:6px;font-size:14px;
+  font-weight:600;transition:.2s;text-decoration:none;min-height:44px}
+.btn:active{transform:scale(.97)}
+.btn-primario{background:var(--azul2);color:#fff}
+.btn-primario:hover{background:var(--azul)}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-verde:hover{filter:brightness(1.1)}
+.btn-gris{background:#eceff3;color:#333}
+.btn-peligro{background:var(--rojo);color:#fff}
+.btn-mini{padding:6px 12px;font-size:12px;border-radius:5px;min-height:36px}
+.loginInfo{padding:32px 26px;background:var(--azulclaro);display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;gap:12px}
+.escudo{position:relative;width:clamp(100px,12vw,130px);height:clamp(100px,12vw,130px);border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#dbe7fb);border:6px solid var(--azul);
+  display:flex;align-items:center;justify-content:center;font-size:42px;
+  box-shadow:0 6px 16px rgba(11,61,145,.25);overflow:hidden;flex-shrink:0}
+.escudo img,.escudoMini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.loginInfo h3{color:var(--azul);font-size:18px}
+.loginInfo p{font-size:13px;color:#3c4043;line-height:1.6}
+
+/* ===== APP ===== */
+#app{display:none;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:232px;background:linear-gradient(180deg,#0b3d91,#0a2f6e);
+  color:#fff;display:flex;flex-direction:column;z-index:30;transition:transform .25s ease}
+.sb-logo{padding:18px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.15)}
+.escudoMini{position:relative;width:44px;height:44px;border-radius:50%;background:#fff;flex-shrink:0;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--azul)}
+.sb-logo div b{font-size:12.5px;display:block;line-height:1.25}
+.sb-logo div span{font-size:10px;opacity:.8}
+.sb-menu{padding:12px 0;flex:1;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:12px;padding:13px 20px;color:#dbe7fb;cursor:pointer;
+  font-size:14px;border-left:4px solid transparent;transition:.15s;min-height:46px}
+.sb-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-item.activo{background:rgba(255,255,255,.14);border-left-color:var(--dorado);color:#fff}
+.sb-item .ico{width:20px;text-align:center}
+.sb-pie{padding:13px 16px;font-size:11px;opacity:.7;border-top:1px solid rgba(255,255,255,.15)}
+#backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:25;display:none}
+.main{margin-left:232px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#fff;min-height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:8px 22px;box-shadow:0 1px 4px rgba(0,0,0,.08);position:sticky;top:0;z-index:15;gap:10px;
+  padding-top:max(8px,env(safe-area-inset-top))}
+.topbar h2{font-size:18px;color:var(--azul)}
+.usuario{display:flex;align-items:center;gap:10px;font-size:13px}
+.uInfo{text-align:right}
+.uInfo b{display:block;line-height:1.2}
+.uInfo small{color:var(--gris)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--azul2);color:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.contenido{padding:22px;max-width:1250px;width:100%;margin:0 auto;flex:1}
+#btnMenu{display:none}
+
+/* Tarjetas */
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:20px}
+.tarjeta{background:#fff;border-radius:10px;padding:15px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border-top:4px solid var(--azul2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tarjeta.naranja{border-top-color:var(--naranja)}
+.tarjeta.roja{border-top-color:var(--rojo)}
+.tarjeta.verde{border-top-color:var(--verde)}
+.tarjeta h4{font-size:11.5px;color:var(--gris);font-weight:600;letter-spacing:.3px}
+.tarjeta .num{font-size:clamp(24px,3vw,30px);font-weight:700;margin:3px 0}
+.tarjeta .sub{font-size:11px;color:var(--gris)}
+.tarjeta .tIco{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:21px;flex-shrink:0}
+.tIco.az{background:var(--azulclaro)} .tIco.na{background:#fdeedd} .tIco.ro{background:#fbe3e0} .tIco.ve{background:#e3f6ec}
+
+.panel{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:20px;margin-bottom:20px}
+.panel h3{font-size:16px;color:var(--azul);margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+
+/* Tablas */
+.tableWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px}
+.tableWrap table{min-width:640px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--azulclaro);color:var(--azul);padding:10px 12px;text-align:left;font-size:12px;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--borde);vertical-align:top}
+tr:hover td{background:#fafbfd}
+.pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap}
+.pill.verde{background:#e3f6ec;color:#1e7d46}
+.pill.rojo{background:#fbe3e0;color:#a93226}
+.pill.naranja{background:#fdeedd;color:#b05a12}
+.pill.azul{background:var(--azulclaro);color:var(--azul)}
+.pill.morado{background:#f1e8fb;color:#6c3483}
+
+.crono{font-variant-numeric:tabular-nums;font-weight:700;color:var(--rojo);white-space:nowrap}
+.barraTiempo{height:6px;background:#eee;border-radius:4px;margin-top:6px;overflow:hidden;min-width:110px}
+.barraTiempo i{display:block;height:100%;background:var(--naranja);transition:width 1s}
+
+.pregunta{background:#fafbfd;border:1px solid var(--borde);border-radius:8px;padding:15px;margin-bottom:13px}
+.pregunta p{font-weight:600;margin-bottom:10px}
+.opcion{display:block;padding:10px 12px;border-radius:6px;cursor:pointer;font-size:14px;min-height:42px}
+.opcion:hover{background:var(--azulclaro)}
+.opcion input{margin-right:8px;transform:scale(1.15)}
+
+.modalFondo{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;
+  justify-content:center;z-index:60;padding:14px}
+.modalFondo.abierto{display:flex}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:640px;max-height:92vh;overflow:auto;
+  padding:22px;-webkit-overflow-scrolling:touch}
+.modal h3{color:var(--azul);margin-bottom:14px;font-size:16px}
+.modalGrande{max-width:860px}
+pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-size:12px;overflow:auto;white-space:pre-wrap}
+
+.toast{position:fixed;bottom:20px;right:20px;background:#202124;color:#fff;padding:13px 18px;border-radius:8px;
+  font-size:13px;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.3);display:none;max-width:340px}
+.toast.ok{background:var(--verde)} .toast.err{background:var(--rojo)}
+
+.vacio{text-align:center;color:var(--gris);padding:32px 10px;font-size:14px}
+.firma{font-size:11px;color:var(--gris);text-align:center;padding:13px 10px;
+  padding-bottom:max(13px,env(safe-area-inset-bottom))}
+
+/* ===== MÓDULOS: asistencia, control parental, mensajes, config ===== */
+.padreControles{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.padreControles select{padding:9px 12px;border:1px solid var(--borde);border-radius:6px;font-size:14px;background:#fff}
+.repGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;margin-top:4px}
+.repGrid div{background:var(--azulclaro);border-radius:8px;padding:10px 12px}
+.repNota{font-size:11.5px;color:var(--gris);line-height:1.7;margin-top:12px;background:#fafbfd;border-left:4px solid var(--dorado);padding:10px 12px;border-radius:0 6px 6px 0}
+.firmas{display:flex;justify-content:space-around;gap:24px;margin-top:34px;text-align:center;flex-wrap:wrap}
+.firmas div{min-width:180px;border-top:1.5px solid #555;padding-top:7px;font-size:12px;font-weight:600}
+.filaEstudiante{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 13px;
+  border:1px solid var(--borde);border-radius:9px;margin-bottom:8px;flex-wrap:wrap;background:#fff}
+.botonesAsistencia{display:flex;gap:6px;flex-wrap:wrap}
+.btnAs{border:1px solid var(--borde);background:#f7f9fc;border-radius:6px;padding:7px 10px;font-size:12px;
+  cursor:pointer;min-height:38px;transition:.15s}
+.btnAs:hover{background:var(--azulclaro)}
+.btnAsActiva{background:var(--azul2);color:#fff;border-color:var(--azul2);font-weight:600}
+.badge{display:none;background:var(--rojo);color:#fff;border-radius:10px;font-size:10px;font-weight:700;
+  padding:2px 7px;margin-left:6px;vertical-align:middle}
+.msgCard{border:1px solid var(--borde);border-left:4px solid var(--azul2);border-radius:8px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.msgCard.propio{border-left-color:var(--verde);background:#f7fdf9}
+.msgCard .msgCab{font-size:12.5px;color:var(--gris);margin-bottom:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.msgCard p{font-size:13.5px;line-height:1.6;white-space:pre-wrap}
+.obsItem{border:1px solid var(--borde);border-radius:8px;padding:12px 14px;margin-bottom:9px;background:#fff}
+.alertaItem{padding:10px 13px;border-radius:8px;margin-bottom:7px;font-size:13.5px;background:#fff;border-left:4px solid var(--verde);line-height:1.6}
+.calInfo{background:var(--azulclaro);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.7}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .sidebar{width:210px}
+  .main{margin-left:210px}
+  .contenido{padding:18px}
+}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);width:265px;box-shadow:none}
+  .sidebar.abierto{transform:translateX(0);box-shadow:0 0 40px rgba(0,0,0,.35)}
+  .main{margin-left:0}
+  #btnMenu{display:inline-flex;align-items:center;justify-content:center}
+  body.menuAbierto #backdrop{display:block}
+  .grid2{grid-template-columns:1fr;gap:16px}
+  .loginCard{grid-template-columns:1fr}
+  .loginInfo{display:none}
+}
+@media(max-width:600px){
+  .banner{min-height:170px}
+  .logoBanner{width:68px;height:68px;border-width:3px}
+  .loginBody{padding:22px 10px;align-items:center}
+  .loginCard{margin-top:-46px;border-radius:10px}
+  .loginForm{padding:24px 18px}
+  .loginForm h2{font-size:18px;margin-bottom:16px}
+  .campo input,.campo select,.campo textarea{font-size:16px;padding:12px}
+  .contenido{padding:13px 11px}
+  .panel{padding:15px 13px;border-radius:9px}
+  .panel h3{font-size:15px}
+  .topbar{padding:8px 12px}
+  .topbar h2{font-size:15px}
+  .uInfo{display:none}
+  .tarjetas{grid-template-columns:repeat(2,1fr);gap:10px}
+  .tarjeta{padding:12px}
+  .tarjeta .tIco{width:38px;height:38px;font-size:18px}
+  .modalFondo{padding:0}
+  .modal{max-width:100%;width:100%;height:100%;max-height:100%;border-radius:0}
+  .toast{left:12px;right:12px;bottom:12px;max-width:none;text-align:center}
+  .btn{width:100%}
+  .panel .btn-mini,.topbar .btn-mini{width:auto}
+  .sb-item{padding:15px 22px;font-size:15px}
+  th,td{padding:9px 10px}
+}
+@media(max-width:380px){
+  .tarjetas{grid-template-columns:1fr}
+  .bannerTxt h1{font-size:16px}
+  .loginForm{padding:20px 14px}
+}
+@media print{
+  body{background:#fff}
+  .sidebar,.topbar,#btnMenu,#backdrop,.firma,.padreControles,.modalFondo,.toast{display:none!important}
+  .main{margin-left:0!important}
+  #app{display:block!important}
+  .contenido{max-width:100%;padding:0}
+  .panel{box-shadow:none;border:1px solid #bbb;break-inside:avoid}
+  .tableWrap{overflow:visible}
+  .tableWrap table{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<div id="backdrop" onclick="toggleMenu(false)"></div>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginPantalla">
+  <div class="banner">
+    <div class="bannerTxt">
+      <img id="logoBanner" class="logoBanner" alt="Escudo" style="display:none">
+      <h1 id="bnNombre1">UNIDAD EDUCATIVA</h1>
+      <h1 id="bnNombre2" style="color:var(--dorado)">"SAN VICENTE DE PAUL"</h1>
+      <p id="bnSub">Sistema de Gestión Académica — Tareas, Exámenes, Reportes y Control Parental</p>
+      <p class="motto" id="bnLema">QUERER · ESFUERZO · COMPROMISO</p>
+    </div>
+  </div>
+  <div class="loginBody">
+    <div class="loginCard">
+      <div class="loginForm">
+        <h2>Formulario de Autenticación</h2>
+        <div class="campo"><label>Usuario</label><input id="logUser" placeholder="ej: jpereira" autocomplete="username"></div>
+        <div class="campo"><label>Contraseña</label><input id="logPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+        <label style="font-size:13px;display:flex;gap:8px;align-items:center;margin-bottom:18px;min-height:30px">
+          <input type="checkbox" id="logRecordar" style="width:18px;height:18px"> Recordar sesión
+        </label>
+        <button class="btn btn-primario" style="width:100%" onclick="login()">INICIAR SESIÓN</button>
+        <p id="logError" style="color:var(--rojo);font-size:12px;margin-top:10px;display:none"></p>
+        <p style="text-align:center;margin-top:12px;font-size:11.5px;color:var(--gris)">
+          El sistema reconoce automáticamente su rol (Docente, Estudiante o Tutor/Padre) según Google Sheets.
+        </p>
+        <p style="text-align:center;margin-top:8px"><a href="#" onclick="abrirManual();return false" style="font-size:12px">📄 Manual de instalación</a></p>
+      </div>
+      <div class="loginInfo">
+        <div class="escudo">🎓<img id="logoLogin" alt="" style="display:none"></div>
+        <h3>Plataforma Académica Virtual</h3>
+        <p>Tareas, exámenes, calificaciones ponderadas por dimensión (Ser · Saber · Hacer · Decidir), asistencia, control parental con informe PDF y notificaciones al tutor.</p>
+        <p style="font-size:11px;color:var(--gris)">Versión 3.0 · Control académico</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="escudoMini">🎓<img id="logoSide" alt="" style="display:none"></div>
+      <div><b id="sbNombre">U.E. "SAN VICENTE DE PAUL"</b><span id="sbSubNombre">Plataforma Académica</span></div>
+    </div>
+    <nav class="sb-menu">
+      <div class="sb-item activo" data-vista="dashboard" onclick="irA('dashboard')"><span class="ico">🏠</span> Inicio</div>
+      <div class="sb-item" data-vista="tareas" onclick="irA('tareas')"><span class="ico">📝</span> Tareas</div>
+      <div class="sb-item" data-vista="examenes" onclick="irA('examenes')"><span class="ico">⏱️</span> Exámenes</div>
+      <div class="sb-item" data-vista="entregas" onclick="irA('entregas')"><span class="ico">📤</span> Entregas / Trabajos</div>
+      <div class="sb-item" data-vista="reportes" onclick="irA('reportes')"><span class="ico">📊</span> Reportes y Notas</div>
+      <div class="sb-item" data-vista="asistencia" id="menuAsistencia" onclick="irA('asistencia')"><span class="ico">🗓️</span> Asistencia</div>
+      <div class="sb-item" data-vista="observaciones" id="menuObservaciones" onclick="irA('observaciones')"><span class="ico">🗒️</span> Observaciones</div>
+      <div class="sb-item" data-vista="mensajes" id="menuMensajes" onclick="irA('mensajes')"><span class="ico">💬</span> Mensajes <span class="badge" id="badgeMensajes"></span></div>
+      <div class="sb-item" data-vista="padre" id="menuPadre" onclick="irA('padre')"><span class="ico">👨‍👩‍👦</span> Reporte de mi hijo(a)</div>
+      <div class="sb-item" data-vista="usuarios" id="menuUsuarios" onclick="irA('usuarios')"><span class="ico">👤</span> Usuarios</div>
+      <div class="sb-item" data-vista="config" id="menuConfig" onclick="irA('config')"><span class="ico">⚙️</span> Configuración</div>
+    </nav>
+    <div class="sb-pie">SGA v3.0<br>SAN VICENTE DE PAUL</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <button class="btn btn-gris btn-mini" id="btnMenu" onclick="toggleMenu()">☰</button>
+        <h2 id="tituloVista" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Inicio</h2>
+      </div>
+      <div class="usuario">
+        <div class="uInfo"><b id="uNombre">—</b><small id="uRol">—</small></div>
+        <div class="avatar" id="uAvatar">U</div>
+        <button class="btn btn-peligro btn-mini" onclick="cerrarSesion()">Salir</button>
+      </div>
+    </div>
+
+    <div class="contenido">
+
+      <!-- DASHBOARD -->
+      <section id="vista-dashboard">
+        <div class="tarjetas">
+          <div class="tarjeta"><div><h4>PENDIENTES</h4><div class="num" id="cPend">0</div><div class="sub">Tareas sin entregar</div></div><div class="tIco na">⏱️</div></div>
+          <div class="tarjeta naranja"><div><h4>ACTIVAS</h4><div class="num" id="cActivas">0</div><div class="sub">Tareas con tiempo</div></div><div class="tIco az">📥</div></div>
+          <div class="tarjeta verde"><div><h4>ENTREGADAS</h4><div class="num" id="cEntr">0</div><div class="sub">Trabajos recibidos</div></div><div class="tIco ve">✅</div></div>
+          <div class="tarjeta roja"><div><h4>EXÁMENES</h4><div class="num" id="cExam">0</div><div class="sub">Evaluaciones</div></div><div class="tIco ro">🧪</div></div>
+        </div>
+        <div class="grid2">
+          <div class="panel">
+            <h3>🍩 Trabajos por tipo</h3>
+            <canvas id="grafico" style="width:100%;max-width:560px;display:block;margin:0 auto"></canvas>
+            <div id="leyenda" style="margin-top:10px;font-size:12px;display:flex;gap:14px;flex-wrap:wrap"></div>
+          </div>
+          <div class="panel">
+            <h3>📄 Actividad reciente</h3>
+            <div id="recientes"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAREAS -->
+      <section id="vista-tareas" style="display:none">
+        <div class="panel" id="panelNuevaTarea" style="display:none">
+          <h3>➕ Nueva tarea (Docente)</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Título</label><input id="tTitulo" placeholder="ej: Informe de laboratorio"></div>
+              <div class="campo"><label>Descripción / Instrucciones</label><textarea id="tDesc" rows="3" placeholder="Indicaciones para el estudiante..."></textarea></div>
+              <div class="campo"><label>Tipo</label>
+                <select id="tTipo"><option>Informe</option><option>Nota Interna</option><option>Nota Externa</option><option>Investigación</option><option>Práctica</option></select>
+              </div>
+            </div>
+            <div>
+              <div class="campo"><label>Curso destino</label><select id="tCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Fecha y hora límite</label><input id="tLimite" type="datetime-local"></div>
+              <div class="campo"><label>Puntaje máximo (referencial)</label><input id="tPuntos" type="number" value="100" min="1" inputmode="numeric"></div>
+              <div class="campo"><label>📎 Adjuntar archivo (máx 30 MB)</label><input type="file" id="tArchivo"></div>
+              <div class="campo"><label>o pega un enlace (YouTube, Drive...)</label><input id="tLink" type="url" placeholder="https://..."></div>
+              <button class="btn btn-verde" onclick="crearTarea()">PUBLICAR TAREA</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>📝 Tareas asignadas</h3>
+          <div id="listaTareas"></div>
+        </div>
+      </section>
+
+      <!-- EXÁMENES -->
+      <section id="vista-examenes" style="display:none">
+        <div class="panel" id="panelNuevoExamen" style="display:none">
+          <h3>➕ Nuevo examen (Docente) — la nota se registra sobre 100 en la dimensión SABER</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Título del examen</label><input id="eTitulo" placeholder="ej: Examen de Biología — Unidad 2"></div>
+              <div class="campo"><label>Curso</label><select id="eCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Duración (minutos)</label><input id="eDuracion" type="number" value="30" min="5" inputmode="numeric"></div>
+            </div>
+            <div>
+              <div class="campo"><label>Preguntas (formato: pregunta | opción1 | opción2 | opción3 | correcta)</label>
+              <textarea id="ePreguntas" rows="6" placeholder="¿Capital de Bolivia?|Sucre|La Paz|Santa Cruz|Sucre&#10;2+2=?|3|4|5|4"></textarea>
+              </div>
+              <button class="btn btn-verde" onclick="crearExamen()">PUBLICAR EXAMEN</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>⏱️ Exámenes disponibles</h3>
+          <div id="listaExamenes"></div>
+        </div>
+      </section>
+
+      <!-- EXAMEN ACTIVO -->
+      <section id="vista-examen-activo" style="display:none">
+        <div class="panel">
+          <h3 id="exTituloPanel">🧪 Examen en curso</h3>
+          <div style="background:#fff3e0;border:1px solid #ffd699;border-radius:8px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <span style="font-size:13px">⏳ Restante: <span class="crono" id="exCrono">--:--</span></span>
+            <span class="pill naranja">Se envía automáticamente al agotarse</span>
+          </div>
+          <div class="barraTiempo" style="margin-bottom:16px"><i id="exBarra" style="width:100%"></i></div>
+          <div id="exPreguntas"></div>
+          <button class="btn btn-primario" onclick="finalizarExamen(false)">ENTREGAR EXAMEN</button>
+        </div>
+      </section>
+
+      <!-- ENTREGAS -->
+      <section id="vista-entregas" style="display:none">
+        <div class="panel" id="panelSubirEntrega" style="display:none">
+          <h3>📤 Subir trabajo / tarea</h3>
+          <div class="campo"><label>Seleccione la tarea</label><select id="entTarea"></select></div>
+          <div class="campo"><label>Archivo (PDF, Word, imágenes, video...)</label><input type="file" id="entArchivo"></div>
+          <div class="campo"><label>Comentario para el docente</label><textarea id="entComent" rows="2"></textarea></div>
+          <button class="btn btn-verde" onclick="subirEntrega()">SUBIR ENTREGA</button>
+        </div>
+        <div class="panel">
+          <h3>📥 Bandeja de entregas <span class="pill azul" style="margin-left:6px">Calificación sobre 100</span></h3>
+          <div id="listaEntregas"></div>
+        </div>
+      </section>
+
+      <!-- REPORTES -->
+      <section id="vista-reportes" style="display:none">
+        <div class="panel">
+          <h3>📊 Control académico — calificaciones por dimensión</h3>
+          <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+            <button class="btn btn-gris btn-mini" onclick="exportarCSV()">⬇ Exportar CSV</button>
+            <button class="btn btn-gris btn-mini" onclick="sincronizarTodo()">🔄 Sincronizar</button>
+          </div>
+          <div id="tablaReportes"></div>
+        </div>
+      </section>
+
+      <!-- USUARIOS (DOCENTE) -->
+      <section id="vista-usuarios" style="display:none">
+        <div class="panel">
+          <h3>👤 Registrar estudiante, docente o tutor</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Usuario</label><input id="rUser" placeholder="ej: jpereira" autocomplete="off"></div>
+              <div class="campo"><label>Contraseña</label><input id="rPass" placeholder="ej: 1234"></div>
+              <div class="campo"><label>Nombre completo</label><input id="rNombre" placeholder="ej: Juan Pereira"></div>
+              <div class="campo"><label>Correo electrónico (para notificaciones)</label><input id="rEmail" type="email" placeholder="ej: tutor@gmail.com"></div>
+            </div>
+            <div>
+              <div class="campo"><label>Rol</label>
+                <select id="rRol" onchange="document.getElementById('campoHijo').style.display=this.value==='tutor'?'block':'none';document.getElementById('campoCurso').style.display=this.value==='estudiante'?'block':'none'">
+                  <option value="estudiante">Estudiante</option>
+                  <option value="docente">Docente</option>
+                  <option value="tutor">Tutor / Padre de familia</option>
+                </select>
+              </div>
+              <div class="campo" id="campoCurso"><label>Curso (solo estudiantes)</label><select id="rCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo" id="campoHijo" style="display:none"><label>Estudiante vinculado (usuario del hijo/a)</label><input id="rHijo" placeholder="ej: jpereira" autocomplete="off"></div>
+              <button class="btn btn-verde" onclick="registrarUsuario()">REGISTRAR USUARIO</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>📋 Usuarios registrados en Google Sheets</h3>
+          <div id="tablaUsuarios"></div>
+        </div>
+      </section>
+
+      <!-- ASISTENCIA (DOCENTE) -->
+      <section id="vista-asistencia" style="display:none">
+        <div class="panel">
+          <h3>🗓️ Registro diario de asistencia (Docente)</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Curso</label><select id="asCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Fecha</label><input id="asFecha" type="date"></div>
+              <button class="btn btn-primario" onclick="cargarListaAsistencia()">CARGAR LISTA</button>
+            </div>
+            <div style="font-size:13px;color:var(--gris);line-height:1.9;align-self:center">
+              <b>Escala de asistencia (Cuadernos Pedagógicos — ME Bolivia):</b><br>
+              <b>P</b> = Presente · <b>T</b> = Atraso · <b>J</b> = Ausencia justificada · <b>A</b> = Ausencia injustificada<br>
+              Asistencia mínima exigida: <b>80%</b>. Al marcar <b>A</b> se envía notificación al correo del tutor (si lo tiene).
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>📋 Lista de estudiantes</h3>
+          <div id="listaAsistencia"><div class="vacio">Seleccione curso y fecha, luego «CARGAR LISTA».</div></div>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn btn-verde btn-mini" onclick="marcarTodos('P')">✔ Marcar todos presentes</button>
+            <button class="btn btn-gris btn-mini" onclick="cargarListaAsistencia()">🔄 Refrescar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTROL PARENTAL (TUTOR) -->
+      <section id="vista-padre" style="display:none">
+        <div class="panel">
+          <h3>👨‍👩‍👦 Control Parental — Informe de rendimiento estudiantil</h3>
+          <div class="padreControles">
+            <label style="font-size:13px;color:var(--gris);font-weight:600">Período:</label>
+            <select id="padreTrimestre">
+              <option value="0">Gestión completa</option>
+              <option value="1">1er Trimestre</option>
+              <option value="2">2do Trimestre</option>
+              <option value="3">3er Trimestre</option>
+            </select>
+            <button class="btn btn-primario btn-mini" onclick="pintarReportePadre()">🔄 Actualizar</button>
+            <button class="btn btn-peligro btn-mini" onclick="descargarPDF()">⬇ Descargar PDF</button>
+            <button class="btn btn-gris btn-mini" onclick="imprimirReporte()">🖨️ Imprimir</button>
+            <button class="btn btn-gris btn-mini" id="btnVerMsgs" onclick="irA('mensajes')">💬 Mensajes</button>
+          </div>
+          <p style="font-size:12px;color:var(--gris);margin-top:6px">
+            Evaluación ponderada por dimensiones <b>Ser · Saber · Hacer · Decidir</b> — todas las calificaciones sobre 100 (Cuadernos Pedagógicos, Ministerio de Educación de Bolivia).
+          </p>
+        </div>
+        <div id="reportePadre"></div>
+      </section>
+
+      <!-- OBSERVACIONES + VALORACIONES (DOCENTE) -->
+      <section id="vista-observaciones" style="display:none">
+        <div class="panel">
+          <h3>🗒️ Observaciones del estudiante (visibles al tutor)</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Curso</label>
+                <select id="obsCurso" onchange="poblarObsEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Estudiante</label><select id="obsEstudiante" onchange="pintarObs();pintarValoraciones()"></select></div>
+            </div>
+            <div>
+              <div class="campo"><label>Tipo de observación</label>
+                <select id="obsTipo"><option>Positiva</option><option>Atención</option><option>Recomendación</option><option>Compromiso</option></select></div>
+              <div class="campo"><label>Observación</label><textarea id="obsTexto" rows="3" placeholder="Ej: Presentó el informe de práctica con excelente calidad..."></textarea></div>
+              <button class="btn btn-verde" onclick="guardarObservacion()">REGISTRAR OBSERVACIÓN</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>🧭 Valoración manual de SER y DECIDIR (sobre 100)</h3>
+          <p style="font-size:12.5px;color:var(--gris);margin-bottom:12px;line-height:1.7">
+            Si no se registra valoración manual, el sistema calcula <b>SER</b> automáticamente desde la asistencia (%) y <b>DECIDIR</b> desde el cumplimiento de entregas (%). El docente puede sobrescribir ambos con una nota manual.
+          </p>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Curso</label>
+                <select id="valCurso" onchange="poblarValEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Estudiante</label><select id="valEstudiante" onchange="pintarValoraciones()"></select></div>
+            </div>
+            <div>
+              <div class="campo"><label>Valoración SER (0–100, opcional)</label><input id="valSer" type="number" min="0" max="100" inputmode="numeric" placeholder="ej: 85"></div>
+              <div class="campo"><label>Valoración DECIDIR (0–100, opcional)</label><input id="valDecidir" type="number" min="0" max="100" inputmode="numeric" placeholder="ej: 90"></div>
+              <button class="btn btn-primario" onclick="guardarValoracion()">GUARDAR VALORACIÓN</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>📋 Observaciones registradas</h3>
+          <div id="listaObs"></div>
+        </div>
+      </section>
+
+      <!-- MENSAJERÍA (DOCENTE ↔ TUTOR) -->
+      <section id="vista-mensajes" style="display:none">
+        <div class="panel">
+          <h3>💬 Mensajería Docente ↔ Tutor</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo" id="campoMsgCurso"><label>Curso (docente)</label>
+                <select id="msgCurso" onchange="poblarMsgDestinatarios()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Destinatario</label><select id="msgPara"></select></div>
+            </div>
+            <div>
+              <div class="campo"><label>Mensaje</label><textarea id="msgTexto" rows="3"></textarea></div>
+              <button class="btn btn-verde" onclick="enviarMensaje()">ENVIAR MENSAJE</button>
+              <p style="font-size:11.5px;color:var(--gris);margin-top:8px">Si el destinatario tiene correo registrado, recibirá también una copia por email.</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>📥 Bandeja de mensajes</h3>
+          <div id="listaMensajes"></div>
+        </div>
+      </section>
+
+      <!-- CONFIGURACIÓN -->
+      <section id="vista-config" style="display:none">
+        <div class="panel" id="panelIdentidad">
+          <h3>🏫 Identidad institucional — logo y nombre del colegio</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Nombre — línea 1</label><input id="cfgLinea1"></div>
+              <div class="campo"><label>Nombre — línea 2 (destacado en dorado)</label><input id="cfgLinea2"></div>
+              <div class="campo"><label>Subtítulo</label><input id="cfgSubtitulo"></div>
+              <div class="campo"><label>Lema</label><input id="cfgLema"></div>
+            </div>
+            <div>
+              <div class="campo"><label>Logo / escudo — URL directa de imagen</label><input id="cfgLogoUrl" placeholder="https://..."></div>
+              <div class="campo"><label>o subir imagen del logo (PNG/JPG, máx 5 MB)</label><input type="file" id="cfgLogoFile" accept="image/*"></div>
+              <div style="display:flex;align-items:center;gap:12px;margin:10px 0">
+                <div class="escudo" style="width:70px;height:70px;font-size:26px;border-width:4px">🎓<img id="cfgLogoPreview" style="display:none"></div>
+                <button class="btn btn-gris btn-mini" type="button" onclick="quitarLogo()">Quitar logo</button>
+              </div>
+              <button class="btn btn-verde" onclick="guardarIdentidad()">GUARDAR IDENTIDAD</button>
+              <p style="font-size:11.5px;color:var(--gris);margin-top:8px">Se refleja en login, menú, informes y PDF. Guardado en la hoja «Configuracion».</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="panelPonderacion">
+          <h3>📊 Ponderación de calificaciones por dimensión (sobre 100)</h3>
+          <p style="font-size:12.5px;color:var(--gris);line-height:1.7;margin-bottom:14px">
+            Todas las calificaciones se registran <b>sobre 100</b> y el promedio final se calcula ponderando las cuatro dimensiones del Modelo Educativo Sociocomunitario Productivo.
+            Modifique los porcentajes para adecuarse a disposiciones vigentes o futuras — <b>la suma debe ser 100%</b>.
+          </p>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>⚖️ Peso SER (%) — actitudes y valores</label><input id="cfgPesoSer" type="number" min="0" max="100" inputmode="numeric"></div>
+              <div class="campo"><label>⚖️ Peso SABER (%) — exámenes</label><input id="cfgPesoSaber" type="number" min="0" max="100" inputmode="numeric"></div>
+              <div class="campo"><label>⚖️ Peso HACER (%) — trabajos y prácticas</label><input id="cfgPesoHacer" type="number" min="0" max="100" inputmode="numeric"></div>
+            </div>
+            <div>
+              <div class="campo"><label>⚖️ Peso DECIDIR (%) — responsabilidad</label><input id="cfgPesoDecidir" type="number" min="0" max="100" inputmode="numeric"></div>
+              <div class="campo"><label>🎯 Nota mínima de aprobación (sobre 100)</label><input id="cfgNotaMin" type="number" min="1" max="100" inputmode="numeric"></div>
+              <div class="campo"><label style="display:flex;gap:8px;align-items:center;font-size:13px">
+                <input type="checkbox" id="cfgNotif" style="width:18px;height:18px"> 📧 Enviar notificaciones por correo al tutor</label></div>
+              <button class="btn btn-verde" onclick="guardarPonderacion()">GUARDAR PONDERACIÓN</button>
+              <p id="pesoSuma" style="font-size:12px;color:var(--gris);margin-top:8px"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>🔐 Cambiar mi contraseña</h3>
+          <div class="grid2">
+            <div>
+              <div class="campo"><label>Contraseña actual</label><input id="cpActual" type="password"></div>
+              <div class="campo"><label>Nueva contraseña</label><input id="cpNueva" type="password"></div>
+              <div class="campo"><label>Repetir nueva contraseña</label><input id="cpRepetir" type="password"></div>
+            </div>
+            <div>
+              <p style="font-size:13px;color:var(--gris);line-height:1.8">El cambio se guarda en la hoja <b>Usuarios</b> de Google Sheets. Mínimo 4 caracteres.</p>
+              <button class="btn btn-primario" onclick="cambiarContrasena()">CAMBIAR CONTRASEÑA</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    <div class="firma">Sistema de Gestión Académica v3.0 · Querer · Esfuerzo · Compromiso</div>
+  </div>
+</div>
+
+<!-- MODAL VISOR -->
+<div class="modalFondo" id="modalVer">
+  <div class="modal modalGrande">
+    <h3 id="verTitulo">📎 Visor de archivos</h3>
+    <div id="verCuerpo"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <a id="verDescargar" class="btn btn-verde btn-mini" target="_blank" rel="noopener">⬇ Abrir / Descargar</a>
+      <button class="btn btn-gris btn-mini" onclick="cerrarVer()">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★ MODAL CALIFICAR ENTREGA -->
+<div class="modalFondo" id="modalCalificar">
+  <div class="modal">
+    <h3>✅ Calificar entrega (sobre 100)</h3>
+    <div class="calInfo" id="calInfo"></div>
+    <div class="campo"><label>Calificación (0 a 100)</label><input id="calNota" type="number" min="0" max="100" inputmode="numeric" placeholder="ej: 85"></div>
+    <div class="campo"><label>Dimensión de la calificación</label>
+      <select id="calDim">
+        <option value="Hacer" selected>HACER — trabajos y prácticas</option>
+        <option value="Saber">SABER — evaluación de conocimientos</option>
+        <option value="Ser">SER — actitudes y valores</option>
+        <option value="Decidir">DECIDIR — responsabilidad</option>
+      </select>
+    </div>
+    <div class="campo"><label>Retroalimentación para el estudiante y el tutor</label><textarea id="calRetro" rows="3" placeholder="ej: Buen informe; cuidar la redacción de conclusiones..."></textarea></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn btn-gris btn-mini" onclick="cerrarCalificar()">CANCELAR</button>
+      <button class="btn btn-verde" onclick="guardarCalificacion()">💾 GUARDAR CALIFICACIÓN</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MANUAL -->
+<div class="modalFondo" id="modalManual">
+  <div class="modal modalGrande">
+    <h3>📄 Manual de instalación (v3.0)</h3>
+    <ol style="font-size:13px;line-height:1.9;padding-left:18px">
+      <li>Edite <code>CONFIG.URL_SCRIPT</code> en el HTML con la URL de su Apps Script.</li>
+      <li>En el editor de Apps Script: pegue <code>Code.gs</code>, ejecute <b>setupInicial</b> y <b>instalarTrigger</b> (autoriza correos y crea el aviso diario 08:00).</li>
+      <li>Implementar → <b>Nueva versión</b> → Implementar.</li>
+      <li>Hoja <b>Usuarios</b>: usuario, contrasena, rol, nombre, curso, hijo, <b>email</b>. Tutores: vincule el usuario del hijo y su correo.</li>
+      <li>Roles se detectan automáticamente al iniciar sesión.</li>
+      <li><b>Calificación</b>: en «Entregas», el docente pulsa ✏ Calificar → nota 0–100, dimensión y retroalimentación.</li>
+      <li><b>Ponderación</b>: en «Configuración» ajuste los pesos Ser/Saber/Hacer/Decidir (suma 100) y la nota mínima.</li>
+      <li>Identidad (logo/nombre) configurable en «Configuración».</li>
+    </ol>
+    <button class="btn btn-primario" style="margin-top:14px" onclick="document.getElementById('modalManual').classList.remove('abierto')">ENTENDIDO</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================
+   CONFIGURACIÓN — EDITE SOLO ESTAS LÍNEAS
+   ========================================================== */
+var CONFIG = {
+  URL_SCRIPT: 'https://script.google.com/macros/s/AKfycbw2-4UBhck3afI3lxFHE8TF7rmx_1xg7LkFWX10v_1mcDvk9EyI61w3bp7ELtkxgp7NRQ/exec',
+  LOGO_ESCUDO: 'https://drive.google.com/file/d/1ic5ZfLzkl5-buZGXwxd_F4D2iQnKjtMk/view?usp=sharing',
+  LOGO_SANVICENTE: 'https://drive.google.com/file/d/1ic5ZfLzkl5-buZGXwxd_F4D2iQnKjtMk/view?usp=sharing'
+};
+var MAX_DRIVE = 30*1024*1024, MAX_LOCAL = 2*1024*1024;
+
+/* ================= ESTADO ================= */
+var SESION = null;
+var DB = { tareas:[], examenes:[], entregas:[], notas:[], asistencia:[], obs:[], mensajes:[], cfg:{} };
+try{ var g=localStorage.getItem('sga_svp'); if(g) DB=JSON.parse(g); }catch(e){}
+try{ var s=localStorage.getItem('sga_sesion'); if(s) SESION=JSON.parse(s); }catch(e){}
+function guardar(){ try{ localStorage.setItem('sga_svp',JSON.stringify(DB)); }catch(e){ toast('⚠️ Memoria local llena; los archivos grandes solo quedan en Drive','err'); } }
+function toast(msg,tipo){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+(tipo||''); t.style.display='block'; setTimeout(function(){t.style.display='none'},3400); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function ahora(){ return new Date().toISOString(); }
+function fechaBonita(iso){ if(!iso) return '—'; var d=new Date(iso); if(isNaN(d)) return String(iso); return d.toLocaleString('es-BO',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+function q(s){ return String(s==null?'':s).replace(/'/g,"\\'"); }
+
+/* ================= UTILIDADES ACADÉMICAS ================= */
+function hoyISO(){ return new Date().toISOString().slice(0,10); }
+function sameUser(a,b){ return String(a==null?'':a).trim().toLowerCase()===String(b==null?'':b).trim().toLowerCase(); }
+function parseNota(n){ var m=String(n==null?'':n).match(/\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
+function promedioLista(v){ var x=v.filter(function(n){return n!=null;}); return x.length?Math.round(x.reduce(function(a,b){return a+b;},0)/x.length):null; }
+function fechaCorta(iso){ var d=new Date(iso); return isNaN(d)?String(iso||'—'):d.toLocaleDateString('es-BO',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function num(v,def){ var n=parseFloat(v); return isNaN(n)?def:n; }
+function pesosActuales(){
+  return { ser:num(DB.cfg.peso_ser,20), saber:num(DB.cfg.peso_saber,40),
+           hacer:num(DB.cfg.peso_hacer,30), decidir:num(DB.cfg.peso_decidir,10) };
+}
+function notaMinima(){ return Math.round(num(DB.cfg.nota_minima,51)); }
+function dimDeNota(n){
+  if(n.dim) return n.dim;
+  var t=String(n.tipo||'').toLowerCase();
+  if(n.examenId||t.indexOf('examen')>=0) return 'Saber';
+  if(t.indexOf('valoraci')>=0) return String(n.evaluacion||'').indexOf('Ser')>=0?'Ser':'Decidir';
+  return 'Hacer';
+}
+function notaCual(v){ if(v==null) return '—'; if(v>=90)return 'E'; if(v>=75)return 'S'; if(v>=60)return 'M'; return 'I'; }
+function pillDim(d){ var m={'Ser':'azul','Saber':'rojo','Hacer':'verde','Decidir':'naranja'}; return '<span class="pill '+(m[d]||'azul')+'">'+esc(d||'—')+'</span>'; }
+function pillEstadoAsis(e){
+  var m={'P':['verde','PRESENTE'],'T':['naranja','ATRASO'],'J':['azul','JUSTIFICADA'],'A':['rojo','AUSENTE']};
+  var v=m[e]||['azul',e||'—'];
+  return '<span class="pill '+v[0]+'">'+v[1]+'</span>';
+}
+function pillTipoObs(t){
+  var m={'Positiva':'verde','Atención':'naranja','Recomendación':'azul','Compromiso':'rojo'};
+  return '<span class="pill '+(m[t]||'azul')+'">'+esc(t)+'</span>';
+}
+var TRIMESTRES = {
+  '1': {ini:[2,1],  fin:[4,30]},
+  '2': {ini:[5,1],  fin:[8,15]},
+  '3': {ini:[8,16], fin:[11,30]}
+};
+function enTrimestre(iso,trim){
+  if(!trim||String(trim)==='0') return true;
+  var t=TRIMESTRES[String(trim)]; if(!t) return true;
+  var f=new Date(iso); if(isNaN(f)) return true;
+  var a=f.getFullYear(); f=new Date(f.getFullYear(),f.getMonth(),f.getDate());
+  return f>=new Date(a,t.ini[0]-1,t.ini[1]) && f<=new Date(a,t.fin[0]-1,t.fin[1]);
+}
+
+/* ================= IDENTIDAD INSTITUCIONAL ================= */
+var IDENT_DEFECTO = {
+  linea1:'UNIDAD EDUCATIVA TÉCNICO HUMANISTICO',
+  linea2:'"SAN VICENTE DE PAUL"',
+  subtitulo:'Sistema de Gestión Académica — Tareas, Exámenes, Reportes y Control Parental',
+  lema:'QUERER · ESFUERZO · COMPROMISO',
+  logo:(CONFIG.LOGO_ESCUDO||'')
+};
+function cfgActual(){
+  var c={}; for(var k in IDENT_DEFECTO) c[k]=IDENT_DEFECTO[k];
+  for(var k2 in DB.cfg) c[k2]=DB.cfg[k2];
+  return c;
+}
+function logoImgSrc(url){
+  var id=driveId(url);
+  return id ? ('https://drive.google.com/thumbnail?id='+id+'&sz=w400') : url;
+}
+function aplicarIdentidad(){
+  var c=cfgActual();
+  var map={bnNombre1:c.linea1, bnNombre2:c.linea2, bnSub:c.subtitulo, bnLema:c.lema,
+           sbNombre:c.linea2, sbSubNombre:'Plataforma Académica'};
+  for(var id in map){ var el=document.getElementById(id); if(el) el.textContent=map[id]; }
+  document.title=c.linea1+' '+c.linea2;
+  if(c.logo){
+    var src=logoImgSrc(c.logo);
+    var disp={logoBanner:'inline-block',logoSide:'block',logoLogin:'block'};
+    for(var i in disp){ var im=document.getElementById(i); if(im){ im.src=src; im.style.display=disp[i]; } }
+    var fv=document.getElementById('faviconDyn');
+    if(!fv){ fv=document.createElement('link'); fv.id='faviconDyn'; fv.rel='icon'; document.head.appendChild(fv); }
+    fv.href=src;
+  } else {
+    ['logoBanner','logoSide','logoLogin'].forEach(function(i){ var im=document.getElementById(i); if(im) im.style.display='none'; });
+  }
+}
+function cargarConfigRemota(){
+  var url=getUrl(); if(!url) return;
+  fetch(url+'?hoja=Configuracion&t='+Date.now()).then(function(r){ return r.json(); }).then(function(datos){
+    var cambio=false;
+    (datos||[]).slice(1).forEach(function(f){
+      var k=String(f[0]||'').trim(); if(!k) return;
+      var v=String(f[1]==null?'':f[1]);
+      if(DB.cfg[k]!==v){ DB.cfg[k]=v; cambio=true; }
+    });
+    if(cambio) guardar();
+    aplicarIdentidad();
+    var vp=document.getElementById('vista-padre');
+    if(vp&&vp.style.display!=='none'&&SESION&&SESION.rol==='tutor') pintarReportePadre();
+  }).catch(function(){});
+}
+function pintarConfig(){
+  if(!SESION) return;
+  var esDoc=SESION.rol==='docente';
+  var pi=document.getElementById('panelIdentidad'); if(pi) pi.style.display=esDoc?'block':'none';
+  var pp=document.getElementById('panelPonderacion'); if(pp) pp.style.display=esDoc?'block':'none';
+  var c=cfgActual();
+  document.getElementById('cfgLinea1').value=c.linea1;
+  document.getElementById('cfgLinea2').value=c.linea2;
+  document.getElementById('cfgSubtitulo').value=c.subtitulo;
+  document.getElementById('cfgLema').value=c.lema;
+  document.getElementById('cfgLogoUrl').value='';
+  var pv=document.getElementById('cfgLogoPreview');
+  if(c.logo){ pv.src=logoImgSrc(c.logo); pv.style.display='block'; } else { pv.style.display='none'; }
+  var p=pesosActuales();
+  document.getElementById('cfgPesoSer').value=p.ser;
+  document.getElementById('cfgPesoSaber').value=p.saber;
+  document.getElementById('cfgPesoHacer').value=p.hacer;
+  document.getElementById('cfgPesoDecidir').value=p.decidir;
+  document.getElementById('cfgNotaMin').value=notaMinima();
+  document.getElementById('cfgNotif').checked=String(DB.cfg.notif_email||'SI').toUpperCase()!=='NO';
+  actualizarSumaPesos();
+}
+function actualizarSumaPesos(){
+  var p=pesosActuales();
+  var suma=p.ser+p.saber+p.hacer+p.decidir;
+  var el=document.getElementById('pesoSuma');
+  if(el) el.innerHTML='Suma actual: <b>'+suma+'%</b> '+(suma===100?'✅':'⚠️ debe ser 100%');
+}
+['cfgPesoSer','cfgPesoSaber','cfgPesoHacer','cfgPesoDecidir'].forEach(function(i){
+  var el=document.getElementById(i);
+  if(el) el.addEventListener('input',function(){
+    DB.cfg.peso_ser=document.getElementById('cfgPesoSer').value;
+    DB.cfg.peso_saber=document.getElementById('cfgPesoSaber').value;
+    DB.cfg.peso_hacer=document.getElementById('cfgPesoHacer').value;
+    DB.cfg.peso_decidir=document.getElementById('cfgPesoDecidir').value;
+    actualizarSumaPesos();
+  });
+});
+function guardarIdentidad(){
+  var vals={
+    linea1:document.getElementById('cfgLinea1').value.trim()||IDENT_DEFECTO.linea1,
+    linea2:document.getElementById('cfgLinea2').value.trim()||IDENT_DEFECTO.linea2,
+    subtitulo:document.getElementById('cfgSubtitulo').value.trim(),
+    lema:document.getElementById('cfgLema').value.trim()
+  };
+  var urlManual=document.getElementById('cfgLogoUrl').value.trim();
+  var f=document.getElementById('cfgLogoFile').files[0];
+  var finalizar=function(logo){
+    if(typeof logo==='string') vals.logo=logo;
+    else if(urlManual) vals.logo=urlManual;
+    else vals.logo=DB.cfg.logo||'';
+    for(var k in vals) DB.cfg[k]=vals[k];
+    guardar(); aplicarIdentidad(); pintarConfig();
+    document.getElementById('cfgLogoFile').value='';
+    var url=getUrl();
+    if(url){
+      var claves=Object.keys(vals), ok=0;
+      claves.forEach(function(k){
+        fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+          body:JSON.stringify({accion:'setconfig',clave:k,valor:String(vals[k])})})
+          .then(function(){ ok++; if(ok===claves.length) toast('Identidad institucional guardada','ok'); })
+          .catch(function(){});
+      });
+    } else toast('Guardado en este dispositivo (falta CONFIG.URL_SCRIPT)','ok');
+  };
+  if(f){
+    if(f.size>5*1024*1024){ toast('La imagen supera 5 MB','err'); return; }
+    var fr=new FileReader();
+    fr.onload=function(){ subirDrive(f.name,f.type,fr.result,function(u){ finalizar(u||null); }); };
+    fr.readAsDataURL(f);
+  } else finalizar(null);
+}
+function quitarLogo(){
+  DB.cfg.logo=''; guardar(); aplicarIdentidad(); pintarConfig();
+  var url=getUrl();
+  if(url) fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'setconfig',clave:'logo',valor:''})}).catch(function(){});
+  toast('Logo eliminado','ok');
+}
+function guardarPonderacion(){
+  if(SESION.rol!=='docente'){ toast('Solo el docente puede modificar la ponderación','err'); return; }
+  var ser=+document.getElementById('cfgPesoSer').value,
+      saber=+document.getElementById('cfgPesoSaber').value,
+      hacer=+document.getElementById('cfgPesoHacer').value,
+      decidir=+document.getElementById('cfgPesoDecidir').value,
+      nmin=+document.getElementById('cfgNotaMin').value;
+  var vals=[ser,saber,hacer,decidir];
+  if(vals.some(function(v){ return isNaN(v)||v<0||v>100; })){ toast('Los pesos deben estar entre 0 y 100','err'); return; }
+  var suma=ser+saber+hacer+decidir;
+  if(suma!==100){ toast('La suma de los pesos es '+suma+'%; debe ser 100%','err'); return; }
+  if(isNaN(nmin)||nmin<1||nmin>100){ toast('Nota mínima inválida (1–100)','err'); return; }
+  var notif=document.getElementById('cfgNotif').checked?'SI':'NO';
+  var datos={peso_ser:ser,peso_saber:saber,peso_hacer:hacer,peso_decidir:decidir,
+             nota_minima:nmin,notif_email:notif};
+  for(var k in datos) DB.cfg[k]=String(datos[k]);
+  guardar();
+  var url=getUrl();
+  if(url){
+    var claves=Object.keys(datos), ok=0;
+    claves.forEach(function(k){
+      fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({accion:'setconfig',clave:k,valor:String(datos[k])})})
+        .then(function(){ ok++; if(ok===claves.length) toast('Ponderación guardada (Ser '+ser+'% · Saber '+saber+'% · Hacer '+hacer+'% · Decidir '+decidir+'% · Aprobación ≥ '+nmin+')','ok'); })
+        .catch(function(){});
+    });
+  } else toast('Guardado localmente','ok');
+  actualizarSumaPesos();
+  refrescarTodo();
+}
+function cambiarContrasena(){
+  var a=document.getElementById('cpActual').value,
+      n=document.getElementById('cpNueva').value,
+      r=document.getElementById('cpRepetir').value;
+  if(!a||!n){ toast('Complete los campos','err'); return; }
+  if(n.length<4){ toast('La nueva contraseña debe tener al menos 4 caracteres','err'); return; }
+  if(n!==r){ toast('Las contraseñas nuevas no coinciden','err'); return; }
+  var url=getUrl(); if(!url){ toast('Falta CONFIG.URL_SCRIPT','err'); return; }
+  fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'cambiarpass',usuario:SESION.usuario,actual:a,nueva:n})})
+    .then(function(res){ return res.text(); })
+    .then(function(t){
+      t=String(t).trim();
+      if(t==='OK'){ toast('Contraseña actualizada correctamente','ok');
+        ['cpActual','cpNueva','cpRepetir'].forEach(function(i){ document.getElementById(i).value=''; });
+        CACHE_USUARIOS=null;
+      } else if(t==='PASS_INCORRECTA'){ toast('La contraseña actual es incorrecta','err'); }
+      else toast('No se pudo cambiar la contraseña','err');
+    }).catch(function(){ toast('Error de conexión','err'); });
+}
+
+/* ================= MENÚ MÓVIL ================= */
+function toggleMenu(forzar){
+  var abierto=(forzar===undefined)?!document.body.classList.contains('menuAbierto'):forzar;
+  document.body.classList.toggle('menuAbierto',abierto);
+  document.getElementById('sidebar').classList.toggle('abierto',abierto);
+}
+function abrirManual(){ document.getElementById('modalManual').classList.add('abierto'); }
+
+/* ================= GOOGLE SHEETS ================= */
+function getUrl(){ return CONFIG.URL_SCRIPT; }
+function syncSheets(mostrar){
+  var url=getUrl(); if(!url){ if(mostrar) toast('Falta CONFIG.URL_SCRIPT','err'); return; }
+  var lotes=[];
+  DB.tareas.forEach(function(t){ lotes.push({hoja:'Tareas',fila:[t.id,t.titulo,t.curso,t.tipo,t.limite,t.puntos,t.docente,JSON.stringify(t.adjunto||null)]}); });
+  DB.entregas.forEach(function(e){
+    var extra={comentario:e.comentario||'',adjunto:e.adjunto||null,contenido:(e.contenido&&e.contenido.length<40000)?e.contenido:''};
+    lotes.push({hoja:'Entregas',fila:[e.id,e.tarea,e.estudiante,e.curso,e.archivo,e.fecha,e.estado,JSON.stringify(extra)]}); });
+  DB.examenes.forEach(function(x){ lotes.push({hoja:'Examenes',fila:[x.id,x.titulo,x.curso,x.duracion,JSON.stringify(x.preguntas),x.docente]}); });
+  DB.asistencia.forEach(function(a){ lotes.push({hoja:'Asistencia',fila:[a.id,a.fecha,a.curso,a.estudiante,a.estado,a.docente||'',a.observacion||'']}); });
+  DB.obs.forEach(function(o){ lotes.push({hoja:'Observaciones',fila:[o.id,o.estudiante,o.fecha,o.tipo,o.texto,o.docente]}); });
+  DB.mensajes.forEach(function(m){ lotes.push({hoja:'Mensajes',fila:[m.id,m.fecha,m.de,m.deNombre,m.para,m.texto]}); });
+  var pend=lotes.filter(function(x){ return !localStorage.getItem('sync_'+x.hoja+x.fila[0]); });
+  pend.forEach(function(x){
+    fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(x)})
+      .then(function(){ localStorage.setItem('sync_'+x.hoja+x.fila[0],'1'); }).catch(function(){});
+  });
+  if(mostrar) toast('Sincronización enviada ('+pend.length+' registros)','ok');
+}
+/* ★ Guardar/actualizar calificación en Sheets (upsert por id) */
+function syncNota(n){
+  var url=getUrl(); if(!url) return;
+  fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'guardarnota',id:n.id,estudiante:n.estudiante,curso:n.curso,
+      evaluacion:n.evaluacion,tipo:n.tipo,nota:n.nota,fecha:n.fecha,examenId:n.examenId||'',dim:n.dim||'',retro:n.retro||''})})
+    .catch(function(){});
+}
+function cargarRemoto(){
+  var url=getUrl(); if(!url) return;
+  ['Tareas','Examenes','Entregas','Notas'].forEach(function(h){
+    fetch(url+'?hoja='+h+'&t='+Date.now()).then(function(r){return r.json();}).then(function(datos){
+      (datos||[]).slice(1).forEach(function(f){
+        try{
+          if(h==='Tareas'&&f[0]&&!DB.tareas.some(function(x){return x.id===String(f[0]);})){
+            var adj=null; try{adj=JSON.parse(f[7]||'null');}catch(_){}
+            DB.tareas.push({id:String(f[0]),titulo:String(f[1]),curso:String(f[2]),tipo:String(f[3]),limite:String(f[4]),puntos:+f[5]||100,docente:String(f[6]),adjunto:adj||undefined});
+          }
+          if(h==='Examenes'&&f[0]&&!DB.examenes.some(function(x){return x.id===String(f[0]);})){
+            var ps=[]; try{ps=JSON.parse(f[4]||'[]');}catch(_){}
+            DB.examenes.push({id:String(f[0]),titulo:String(f[1]),curso:String(f[2]),duracion:+f[3]||30,preguntas:ps,docente:String(f[5])});
+          }
+          if(h==='Entregas'&&f[0]&&!DB.entregas.some(function(x){return x.id===String(f[0]);})){
+            var ex={}; try{ex=JSON.parse(f[7]||'{}');}catch(_){}
+            DB.entregas.push({id:String(f[0]),tareaId:'',tarea:String(f[1]),estudiante:String(f[2]),curso:String(f[3]),archivo:String(f[4]),fecha:String(f[5]),estado:String(f[6]),comentario:ex.comentario||'',adjunto:ex.adjunto||undefined,contenido:ex.contenido||undefined});
+          }
+          if(h==='Notas'&&f[0]){
+            var reg={id:String(f[0]),estudiante:String(f[1]||''),curso:String(f[2]||''),
+              evaluacion:String(f[3]||''),tipo:String(f[4]||''),nota:String(f[5]||''),
+              fecha:String(f[6]||''),examenId:String(f[7]||''),dim:String(f[8]||''),retro:String(f[9]||'')};
+            var existente=DB.notas.find(function(x){return x.id===reg.id;});
+            if(existente){ for(var kk in reg) existente[kk]=reg[kk]; }
+            else DB.notas.push(reg);
+          }
+        }catch(_){}
+      });
+      guardar(); refrescarTodo();
+    }).catch(function(){});
+  });
+}
+function cargarAsistenciaRemota(){
+  var url=getUrl(); if(!url) return;
+  fetch(url+'?hoja=Asistencia&t='+Date.now()).then(function(r){return r.json();}).then(function(datos){
+    var n=0;
+    (datos||[]).slice(1).forEach(function(f){
+      try{
+        if(f[0]&&!DB.asistencia.some(function(a){return a.id===String(f[0]);})){
+          DB.asistencia.push({id:String(f[0]),fecha:String(f[1]||'').slice(0,10),curso:String(f[2]||''),
+            estudiante:String(f[3]||''),estado:String(f[4]||'P'),docente:String(f[5]||'')});
+          n++;
+        }
+      }catch(_){}
+    });
+    if(n){ guardar(); refrescarTodo(); }
+  }).catch(function(){});
+}
+function cargarObsRemota(){
+  var url=getUrl(); if(!url) return;
+  fetch(url+'?hoja=Observaciones&t='+Date.now()).then(function(r){return r.json();}).then(function(datos){
+    var n=0;
+    (datos||[]).slice(1).forEach(function(f){
+      try{
+        if(f[0]&&!DB.obs.some(function(o){return o.id===String(f[0]);})){
+          DB.obs.push({id:String(f[0]),estudiante:String(f[1]||''),fecha:String(f[2]||''),
+            tipo:String(f[3]||'Atención'),texto:String(f[4]||''),docente:String(f[5]||'')});
+          n++;
+        }
+      }catch(_){}
+    });
+    if(n){ guardar(); refrescarPantallasObs(); }
+  }).catch(function(){});
+}
+function cargarMensajesRemota(){
+  var url=getUrl(); if(!url) return;
+  fetch(url+'?hoja=Mensajes&t='+Date.now()).then(function(r){return r.json();}).then(function(datos){
+    var n=0;
+    (datos||[]).slice(1).forEach(function(f){
+      try{
+        if(f[0]&&!DB.mensajes.some(function(m){return m.id===String(f[0]);})){
+          DB.mensajes.push({id:String(f[0]),fecha:String(f[1]||''),de:String(f[2]||''),
+            deNombre:String(f[3]||''),para:String(f[4]||''),texto:String(f[5]||'')});
+          n++;
+        }
+      }catch(_){}
+    });
+    if(n) guardar();
+    actualizarBadgeMensajes();
+    var vm=document.getElementById('vista-mensajes');
+    if(vm&&vm.style.display!=='none') pintarMensajes();
+  }).catch(function(){});
+}
+function sincronizarTodo(){
+  cargarRemoto(); cargarAsistenciaRemota(); cargarObsRemota(); cargarMensajesRemota(); cargarConfigRemota();
+  syncSheets(true);
+  toast('Sincronizando con Google Sheets...','ok');
+}
+
+/* ================= DRIVE ================= */
+function subirDrive(nombre,mime,dataURL,cb){
+  var url=getUrl(); if(!url){ cb(null); return; }
+  fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({accion:'archivo',nombre:nombre,mime:mime,data:dataURL})})
+    .then(function(r){return r.json();}).then(function(j){ cb(j&&j.ok?j.url:null); })
+    .catch(function(){ cb(null); });
+}
+
+/* ================= LOGIN (ROL AUTOMÁTICO) ================= */
+var CACHE_USUARIOS=null, CACHE_HORA=0;
+function getUsuariosRemotos(forzar){
+  var url=getUrl();
+  return new Promise(function(res){
+    if(!url){ res(null); return; }
+    if(!forzar&&CACHE_USUARIOS&&Date.now()-CACHE_HORA<60000){ res(CACHE_USUARIOS); return; }
+    fetch(url+'?hoja=Usuarios&t='+Date.now())
+      .then(function(r){ return r.text(); })
+      .then(function(txt){
+        var datos=JSON.parse(txt);
+        CACHE_USUARIOS=(datos||[]).slice(1).map(function(f){
+          return {usuario:String(f[0]||'').trim(),pass:String(f[1]||'').trim(),
+                  rol:String(f[2]||'').trim().toLowerCase(),nombre:String(f[3]||f[0]||'').trim(),
+                  curso:String(f[4]||'').trim(),hijo:String(f[5]||'').trim(),email:String(f[6]||'').trim()};
+        }).filter(function(x){return x.usuario;});
+        CACHE_HORA=Date.now(); res(CACHE_USUARIOS);
+      }).catch(function(){ res(null); });
+  });
+}
+function usuariosDemo(){
+  return [{usuario:'docente',pass:'1234',rol:'docente',nombre:'Docente Demo',curso:'',hijo:'',email:''},
+          {usuario:'estudiante',pass:'1234',rol:'estudiante',nombre:'Estudiante Demo',curso:'6to "A"',hijo:'',email:''},
+          {usuario:'tutor',pass:'1234',rol:'tutor',nombre:'Tutor Demo',curso:'',hijo:'estudiante',email:''}];
+}
+function login(){
+  var u=document.getElementById('logUser').value.trim(),
+      p=document.getElementById('logPass').value,
+      err=document.getElementById('logError');
+  if(!u||!p){ err.textContent='Complete usuario y contraseña.'; err.style.display='block'; return; }
+  err.textContent='Verificando credenciales en Google Sheets...'; err.style.color='#0b3d91'; err.style.display='block';
+  var url=getUrl();
+  if(!url){ err.style.color='var(--rojo)'; err.textContent='Falta CONFIG.URL_SCRIPT en el código.'; return; }
+  fetch(url+'?accion=login&usuario='+encodeURIComponent(u)+'&password='+encodeURIComponent(p))
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(j&&j.ok===true){ finalizarLogin({usuario:j.usuario,nombre:j.nombre||j.usuario,rol:(j.rol||'estudiante').toLowerCase(),curso:j.curso||'',hijo:(j.hijo||'').trim(),email:(j.email||'').trim()},err); }
+      else if(j&&j.ok===false){ err.style.color='var(--rojo)'; err.textContent=j.error||'Usuario o contraseña incorrectos.'; }
+      else { loginFallback(u,p,err); }
+    })
+    .catch(function(){ loginFallback(u,p,err); });
+}
+function loginFallback(u,p,err){
+  getUsuariosRemotos(true).then(function(usuarios){
+    err.style.color='var(--rojo)';
+    var lista=usuarios||usuariosDemo();
+    var found=lista.find(function(x){ return x.usuario.toLowerCase()===u.toLowerCase()&&x.pass===p; });
+    if(!found){ err.textContent=usuarios?'Usuario o contraseña incorrectos.':'Sin conexión con Sheets. Verifique CONFIG.URL_SCRIPT.'; return; }
+    finalizarLogin({usuario:found.usuario,nombre:found.nombre||found.usuario,rol:found.rol,curso:found.curso||'',hijo:(found.hijo||'').trim(),email:(found.email||'').trim()},err);
+  });
+}
+function finalizarLogin(u,err){
+  err.style.color='var(--rojo)';
+  if(u.rol==='tutor'&&!u.hijo){ err.textContent='Su cuenta de tutor no tiene un estudiante vinculado. Comuníquese con el docente.'; return; }
+  SESION={usuario:u.usuario,nombre:u.nombre||u.usuario,rol:u.rol,curso:u.curso||'',hijo:u.hijo||'',email:u.email||''};
+  err.style.display='none';
+  if(document.getElementById('logRecordar').checked) localStorage.setItem('sga_sesion',JSON.stringify(SESION));
+  entrar();
+}
+function registrarUsuario(){
+  var u=document.getElementById('rUser').value.trim(),p=document.getElementById('rPass').value,
+      r=document.getElementById('rRol').value,n=document.getElementById('rNombre').value.trim(),
+      c=document.getElementById('rCurso').value,
+      h=(document.getElementById('rHijo')||{}).value||'',
+      em=(document.getElementById('rEmail')||{}).value||'';
+  if(!u||!p||!n){ toast('Complete usuario, contraseña y nombre','err'); return; }
+  if(r==='tutor'&&!h.trim()){ toast('Para un tutor indique el usuario del estudiante (hijo/a)','err'); return; }
+  if(r==='tutor'&&!em.trim()) toast('Se recomienda registrar el correo del tutor para recibir notificaciones','err');
+  var url=getUrl(); if(!url){ toast('Falta CONFIG.URL_SCRIPT','err'); return; }
+  fetch(url+'?accion=existe&usuario='+encodeURIComponent(u))
+    .then(function(r2){ return r2.text(); })
+    .then(function(existe){
+      if(String(existe).toUpperCase().indexOf('SI')>=0){ toast('Ese usuario ya existe','err'); return; }
+      fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({hoja:'Usuarios',fila:[u,p,r,n,c,h.trim(),em.trim()]})})
+        .then(function(){
+          CACHE_USUARIOS=null;
+          ['rUser','rPass','rNombre','rHijo','rEmail'].forEach(function(i){ var el=document.getElementById(i); if(el) el.value=''; });
+          toast('Usuario "'+u+'" registrado como '+r+(r==='tutor'?' (vinculado a '+h.trim()+')':''),'ok');
+          getUsuariosRemotos(true).then(listarUsuarios);
+        })
+        .catch(function(){ toast('No se pudo registrar','err'); });
+    }).catch(function(){ toast('No se pudo verificar duplicados','err'); });
+}
+function listarUsuarios(){
+  var div=document.getElementById('tablaUsuarios'); if(!div) return;
+  var lista=CACHE_USUARIOS;
+  if(!lista){ div.innerHTML='<div class="vacio">Cargando usuarios...</div>'; return; }
+  div.innerHTML=lista.length?'<div class="tableWrap"><table><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Curso</th><th>Hijo/a</th><th>Correo</th></tr>'
+    +lista.map(function(x){
+      var cls=x.rol==='docente'?'azul':(x.rol==='tutor'?'naranja':'verde');
+      return '<tr><td><b>'+esc(x.usuario)+'</b></td><td>'+esc(x.nombre)+'</td><td><span class="pill '+cls+'">'+esc(x.rol)+'</span></td><td>'+esc(x.curso||'—')+'</td><td>'+esc(x.hijo||'—')+'</td><td>'+esc(x.email||'—')+'</td></tr>';
+    }).join('')+'</table></div>':'<div class="vacio">Sin usuarios</div>';
+}
+function nombreDeUsuario(u){
+  var x=(CACHE_USUARIOS||[]).find(function(y){ return sameUser(y.usuario,u); });
+  return x?(x.nombre||u):(u||'—');
+}
+
+/* ================= ENTRAR / NAVEGACIÓN ================= */
+var VIS={
+  dashboard:['docente','estudiante'],
+  tareas:['docente','estudiante'],
+  examenes:['docente','estudiante'],
+  entregas:['docente','estudiante'],
+  reportes:['docente','estudiante'],
+  usuarios:['docente'],
+  asistencia:['docente'],
+  observaciones:['docente'],
+  mensajes:['docente','tutor'],
+  padre:['tutor'],
+  config:['docente','estudiante','tutor']
+};
+function entrar(){
+  document.getElementById('loginPantalla').style.display='none';
+  document.getElementById('app').style.display='block';
+  var rol=SESION.rol;
+  document.getElementById('uNombre').textContent=SESION.nombre+(rol==='estudiante'&&SESION.curso?' · '+SESION.curso:'');
+  document.getElementById('uRol').textContent=rol==='docente'?'DOCENTE':(rol==='tutor'?'TUTOR / PADRE DE FAMILIA':'ESTUDIANTE');
+  document.getElementById('uAvatar').textContent=SESION.nombre.charAt(0).toUpperCase();
+  document.getElementById('panelNuevaTarea').style.display=rol==='docente'?'block':'none';
+  document.getElementById('panelNuevoExamen').style.display=rol==='docente'?'block':'none';
+  document.getElementById('panelSubirEntrega').style.display=rol==='estudiante'?'block':'none';
+  document.querySelectorAll('.sb-item').forEach(function(el){
+    var v=el.getAttribute('data-vista');
+    var roles=VIS[v]||[];
+    el.style.display=roles.indexOf(rol)>=0?'flex':'none';
+  });
+  var fAs=document.getElementById('asFecha'); if(fAs&&!fAs.value) fAs.value=hoyISO();
+  getUsuariosRemotos(true).then(listarUsuarios);
+  cargarRemoto(); cargarAsistenciaRemota(); cargarConfigRemota();
+  cargarObsRemota(); cargarMensajesRemota(); syncSheets(false);
+  if(rol==='tutor'){ getUsuariosRemotos(true).then(function(){ irA('padre'); refrescarTodo(); }); }
+  else{ irA('dashboard'); refrescarTodo(); }
+}
+function cerrarSesion(){ localStorage.removeItem('sga_sesion'); location.reload(); }
+function irA(v){
+  ['dashboard','tareas','examenes','examen-activo','entregas','reportes','usuarios','asistencia','padre','observaciones','mensajes','config'].forEach(function(x){
+    var el=document.getElementById('vista-'+x); if(el) el.style.display=(x===v)?'block':'none';
+  });
+  document.querySelectorAll('.sb-item').forEach(function(el){
+    el.classList.toggle('activo', el.getAttribute('data-vista')===v || (v==='examen-activo'&&el.getAttribute('data-vista')==='examenes'));
+  });
+  var titulos={dashboard:'Inicio',tareas:'Tareas',examenes:'Exámenes','examen-activo':'Examen en curso',
+    entregas:'Entregas / Trabajos',reportes:'Reportes y Notas',usuarios:'Usuarios',
+    asistencia:'Registro de Asistencia',padre:'Control Parental — Reporte de mi hijo(a)',
+    observaciones:'Observaciones y Valoraciones',mensajes:'Mensajería',config:'Configuración'};
+  document.getElementById('tituloVista').textContent=titulos[v]||v;
+  toggleMenu(false);
+  if(v==='dashboard') pintarDashboard();
+  if(v==='usuarios') listarUsuarios();
+  if(v==='asistencia') cargarListaAsistencia();
+  if(v==='padre') pintarReportePadre();
+  if(v==='observaciones'){ poblarObsEstudiantes(); poblarValEstudiantes(); }
+  if(v==='mensajes') pintarMensajes();
+  if(v==='config') pintarConfig();
+}
+
+/* ================= DASHBOARD ================= */
+function tareasVisibles(){ return SESION.rol==='docente'?DB.tareas:DB.tareas.filter(function(t){return t.curso===SESION.curso;}); }
+function examenesVisibles(){ return SESION.rol==='docente'?DB.examenes:DB.examenes.filter(function(e){return e.curso===SESION.curso;}); }
+function entregasVisibles(){ return SESION.rol==='docente'?DB.entregas:DB.entregas.filter(function(e){return sameUser(e.estudiante,SESION.usuario);}); }
+function sizeCanvas(){
+  var cv=document.getElementById('grafico'); if(!cv) return;
+  var w=cv.parentElement.clientWidth-40||300;
+  w=Math.max(240,Math.min(w,560));
+  cv.width=w; cv.height=Math.max(230,Math.round(w*0.56));
+}
+function pintarDashboard(){
+  if(SESION.rol==='tutor') return;
+  var ts=tareasVisibles(), es=examenesVisibles(), en=entregasVisibles();
+  var pend=ts.filter(function(t){ return !en.some(function(e){return (e.tareaId===t.id||e.tarea===t.titulo)&&(SESION.rol==='docente'||sameUser(e.estudiante,SESION.usuario));})&&new Date(t.limite)>new Date(); }).length;
+  document.getElementById('cPend').textContent=pend;
+  document.getElementById('cActivas').textContent=ts.filter(function(t){return new Date(t.limite)>new Date();}).length;
+  document.getElementById('cEntr').textContent=en.length;
+  document.getElementById('cExam').textContent=es.length;
+  sizeCanvas();
+  var cv=document.getElementById('grafico'),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  var tipos={},colores=['#e67e22','#0b3d91','#c0392b','#27ae60','#8e44ad'],orden=[];
+  ts.forEach(function(t){ if(!tipos[t.tipo]){tipos[t.tipo]=0;orden.push(t.tipo);} tipos[t.tipo]++; });
+  var total=orden.reduce(function(a,k){return a+tipos[k];},0)||1;
+  var cx=cv.width/2, cy=cv.height/2, r=Math.min(cv.width,cv.height)/2-26, ang=-Math.PI/2;
+  orden.forEach(function(k,i){
+    var frac=tipos[k]/total, ang2=ang+frac*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,ang,ang2); ctx.closePath();
+    ctx.fillStyle=colores[i%colores.length]; ctx.fill();
+    if(frac>0.04){ ctx.fillStyle='#fff'; ctx.font='bold '+Math.max(11,Math.round(r/9))+'px Arial'; ctx.textAlign='center';
+      var mid=(ang+ang2)/2; ctx.fillText(Math.round(frac*100)+'%',cx+Math.cos(mid)*r*0.55,cy+Math.sin(mid)*r*0.55+4); }
+    ang=ang2;
+  });
+  if(!orden.length){ ctx.fillStyle='#bbb'; ctx.font='14px Arial'; ctx.textAlign='center'; ctx.fillText('Sin datos',cx,cy); }
+  document.getElementById('leyenda').innerHTML=orden.map(function(k,i){
+    return '<span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+colores[i%colores.length]+';margin-right:5px"></i>'+esc(k)+' ('+tipos[k]+') · '+Math.round(tipos[k]/total*100)+'%</span>'; }).join('')||'<span style="color:#888">Sin datos</span>';
+  var rec=en.slice(-5).reverse();
+  document.getElementById('recientes').innerHTML=rec.length?rec.map(function(e){
+    var t=DB.tareas.find(function(x){return x.id===e.tareaId;});
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--borde);font-size:13px"><b>'+esc(e.archivo||'Trabajo')+'</b><br><small style="color:#888">'+esc(SESION.rol==='docente'?nombreDeUsuario(e.estudiante):'Entrega')+' → '+esc(t?t.titulo:e.tarea)+' · '+fechaBonita(e.fecha)+'</small></div>';
+  }).join(''):'<div class="vacio">Aún no hay entregas registradas</div>';
+}
+var _rz; window.addEventListener('resize',function(){
+  clearTimeout(_rz);
+  _rz=setTimeout(function(){
+    if(SESION&&document.getElementById('vista-dashboard').style.display!=='none') pintarDashboard();
+  },160);
+});
+
+/* ================= TAREAS ================= */
+function crearTarea(){
+  var titulo=document.getElementById('tTitulo').value.trim(), desc=document.getElementById('tDesc').value.trim(),
+      tipo=document.getElementById('tTipo').value, curso=document.getElementById('tCurso').value,
+      limite=document.getElementById('tLimite').value, puntos=+document.getElementById('tPuntos').value||100;
+  if(!titulo||!limite){ toast('Complete título y fecha límite','err'); return; }
+  var f=document.getElementById('tArchivo').files[0];
+  var link=document.getElementById('tLink').value.trim();
+  var publicar=function(adj){
+    var t={id:uid(),titulo:titulo,desc:desc,tipo:tipo,curso:curso,limite:limite,puntos:puntos,docente:SESION.nombre};
+    if(adj) t.adjunto=adj;
+    DB.tareas.push(t); guardar(); syncSheets();
+    ['tTitulo','tDesc','tLink','tLimite'].forEach(function(i){document.getElementById(i).value='';});
+    document.getElementById('tArchivo').value='';
+    toast('Tarea publicada para '+curso+(adj?' (con adjunto)':''),'ok'); refrescarTodo();
+  };
+  if(f){
+    if(f.size>MAX_DRIVE){ toast('Supera 30 MB. Use un enlace de YouTube/Drive.','err'); return; }
+    var fr=new FileReader();
+    fr.onload=function(){
+      subirDrive(f.name,f.type,fr.result,function(url){
+        if(url){ publicar({nombre:f.name,tipo:'drive',data:url}); }
+        else if(f.size<=MAX_LOCAL){ publicar({nombre:f.name,tipo:'local',data:fr.result}); }
+        else { publicar(null); toast('Drive falló; tarea creada sin adjunto','err'); }
+      });
+    };
+    fr.readAsDataURL(f);
+  } else if(link){ publicar({nombre:link,tipo:'link',data:link}); }
+  else publicar(null);
+}
+function estadoTarea(t){
+  var ent=DB.entregas.find(function(e){return (e.tareaId===t.id||e.tarea===t.titulo)&&(SESION.rol==='docente'||sameUser(e.estudiante,SESION.usuario));});
+  if(ent) return '<span class="pill verde">ENTREGADA</span>';
+  return new Date(t.limite)>new Date()?'<span class="pill naranja">EN TIEMPO</span>':'<span class="pill rojo">VENCIDA</span>';
+}
+function pintarTareas(){
+  var ts=tareasVisibles().slice().sort(function(a,b){return new Date(a.limite)-new Date(b.limite);});
+  document.getElementById('listaTareas').innerHTML=ts.length?
+    '<div class="tableWrap"><table><tr><th>Título</th><th>Curso</th><th>Tipo</th><th>Límite</th><th>Restante</th><th>Estado</th><th>Archivo</th>'+(SESION.rol==='docente'?'<th></th>':'')+'</tr>'+
+    ts.map(function(t){
+      var quedan=new Date(t.limite)-new Date(), restante=quedan>0?msATexto(quedan):'VENCIDA';
+      var pct=Math.max(0,Math.min(100,quedan/(1000*60*60*24*7)*100));
+      var adjCell=t.adjunto?'<button class="btn btn-primario btn-mini" onclick="verAdjuntoTarea(\''+q(t.id)+'\')">📎 Abrir</button>':'<span style="color:#bbb">—</span>';
+      return '<tr><td><b>'+esc(t.titulo)+'</b><br><small style="color:#888">'+esc(t.desc||'')+'</small></td><td>'+esc(t.curso)+'</td><td><span class="pill azul">'+esc(t.tipo)+'</span></td><td>'+fechaBonita(t.limite)+'</td>'+
+      '<td><span class="crono" data-limite="'+t.limite+'">'+restante+'</span><div class="barraTiempo"><i style="width:'+pct+'%"></i></div></td><td>'+estadoTarea(t)+'</td><td>'+adjCell+'</td>'+
+      (SESION.rol==='docente'?'<td><button class="btn btn-peligro btn-mini" onclick="borrarTarea(\''+q(t.id)+'\')">✖</button></td>':'')+'</tr>';
+    }).join('')+'</table></div>':'<div class="vacio">No hay tareas registradas</div>';
+  var sel=document.getElementById('entTarea');
+  if(sel) sel.innerHTML=ts.filter(function(t){return new Date(t.limite)>new Date();}).map(function(t){
+    return '<option value="'+esc(t.id)+'">'+esc(t.titulo)+' — '+esc(t.curso)+'</option>'; }).join('')||'<option value="">Sin tareas abiertas</option>';
+}
+function borrarTarea(id){ DB.tareas=DB.tareas.filter(function(t){return t.id!==id;}); guardar(); refrescarTodo(); toast('Tarea eliminada'); }
+function msATexto(ms){ var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),ss=s%60;
+  return (d>0?d+'d ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'); }
+
+/* ================= VISOR DE ARCHIVOS ================= */
+function driveId(url){ var m=String(url).match(/\/d\/([-\w]{20,})/); return m?m[1]:(String(url).match(/id=([-\w]{20,})/)||[,''])[1]; }
+function ytEmbed(url){ var m=String(url).match(/(?:v=|youtu\.be\/|embed\/)([-\w]{11})/); return m?'https://www.youtube.com/embed/'+m[1]:url; }
+function blobUrl(dataURL){
+  try{ var p=dataURL.split(','),mime=p[0].match(/:(.*?);/)[1],b=atob(p[1]),arr=new Uint8Array(b.length);
+    for(var i=0;i<b.length;i++) arr[i]=b.charCodeAt(i);
+    return URL.createObjectURL(new Blob([arr],{type:mime})); }catch(e){ return dataURL; }
+}
+function abrirVisor(a){
+  if(!a){ toast('No hay archivo adjunto','err'); return; }
+  document.getElementById('verTitulo').textContent='📎 '+(a.nombre||'Archivo');
+  var c=document.getElementById('verCuerpo'), dl=document.getElementById('verDescargar');
+  dl.style.display='inline-block';
+  var id=driveId(a.data), html='', href=a.data;
+  if(/^data:image/.test(a.data)) html='<img src="'+a.data+'" style="max-width:100%;border-radius:8px">';
+  else if(/^data:video/.test(a.data)) html='<video controls playsinline style="max-width:100%;width:100%;border-radius:8px"><source src="'+a.data+'"></video>';
+  else if(/^data:audio/.test(a.data)) html='<audio controls style="width:100%"><source src="'+a.data+'"></audio>';
+  else if(/^data:/.test(a.data)){ var b=blobUrl(a.data); href=b; html='<iframe src="'+b+'" style="width:100%;height:62vh;border:1px solid var(--borde);border-radius:8px"></iframe>'; }
+  else if(id){ html='<iframe src="https://drive.google.com/file/d/'+id+'/preview" style="width:100%;height:62vh;border:0;border-radius:8px"></iframe>'; href='https://drive.google.com/uc?export=download&id='+id; }
+  else if(/youtu\.?be/.test(a.data)){ html='<div style="position:relative;padding-top:56.25%"><iframe src="'+ytEmbed(a.data)+'" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:8px" allowfullscreen></iframe></div>'; }
+  else html='<div class="vacio">Vista previa no disponible. Use "Abrir original".</div>';
+  c.innerHTML=html; dl.href=href; dl.setAttribute('download',a.nombre||'archivo');
+  document.getElementById('modalVer').classList.add('abierto');
+}
+function cerrarVer(){ document.getElementById('modalVer').classList.remove('abierto'); document.getElementById('verCuerpo').innerHTML=''; }
+function verAdjuntoTarea(id){ var t=DB.tareas.find(function(x){return x.id===id;}); if(t) abrirVisor(t.adjunto); }
+function verAdjuntoEntrega(id){ var e=DB.entregas.find(function(x){return x.id===id;});
+  if(e) abrirVisor(e.adjunto||(e.contenido?{nombre:e.archivo,tipo:'local',data:e.contenido}:null)); }
+function verResultadosExamen(exId){
+  var x=DB.examenes.find(function(e){return e.id===exId;}); if(!x) return;
+  var ns=DB.notas.filter(function(n){return n.examenId===exId;});
+  document.getElementById('verTitulo').textContent='📊 Resultados — '+x.titulo;
+  document.getElementById('verDescargar').style.display='none';
+  document.getElementById('verCuerpo').innerHTML=ns.length?
+    '<div class="tableWrap"><table><tr><th>Estudiante</th><th>Nota (Saber)</th><th>Fecha</th><th>Detalle</th></tr>'
+    +ns.map(function(n){ return '<tr><td><b>'+esc(nombreDeUsuario(n.estudiante))+'</b></td><td><b>'+esc(n.nota)+'</b>/100</td><td>'+fechaCorta(n.fecha)+'</td><td>'+esc(n.retro||'—')+'</td></tr>'; }).join('')
+    +'</table></div><p style="font-size:12px;color:var(--gris);margin-top:8px">Promedio del curso: <b>'+(promedioLista(ns.map(function(n){return parseNota(n.nota);}))??'—')+'</b>/100</p>'
+    :'<div class="vacio">Ningún estudiante rindió este examen aún</div>';
+  document.getElementById('modalVer').classList.add('abierto');
+}
+
+/* ================= EXÁMENES ================= */
+function crearExamen(){
+  var lineas=document.getElementById('ePreguntas').value.split('\n').filter(function(l){return l.trim();});
+  var preguntas=lineas.map(function(l){ var p=l.split('|').map(function(x){return x.trim();});
+    return p.length>=5?{q:p[0],ops:[p[1],p[2],p[3]],ok:p[4]}:null; }).filter(Boolean);
+  if(!document.getElementById('eTitulo').value.trim()||!preguntas.length){ toast('Complete título y al menos una pregunta válida (5 campos separados por |)','err'); return; }
+  var ex={id:uid(),titulo:document.getElementById('eTitulo').value.trim(),curso:document.getElementById('eCurso').value,
+    duracion:+document.getElementById('eDuracion').value||30,preguntas:preguntas,docente:SESION.nombre};
+  DB.examenes.push(ex); guardar(); syncSheets();
+  document.getElementById('eTitulo').value=''; document.getElementById('ePreguntas').value='';
+  toast('Examen publicado — la nota se registrará sobre 100 en SABER','ok'); refrescarTodo();
+}
+function pintarExamenes(){
+  var es=examenesVisibles();
+  document.getElementById('listaExamenes').innerHTML=es.length?
+    '<div class="tableWrap"><table><tr><th>Examen</th><th>Curso</th><th>Duración</th><th>Preguntas</th><th>Acción</th></tr>'
+    +es.map(function(x){
+      var accion='';
+      if(SESION.rol==='estudiante'){
+        var ya=DB.notas.find(function(n){return n.examenId===x.id&&sameUser(n.estudiante,SESION.usuario);});
+        accion=ya?'<span class="pill verde">RENDIDO — '+esc(ya.nota)+'/100</span>'
+          :'<button class="btn btn-primario btn-mini" onclick="iniciarExamen(\''+q(x.id)+'\')">▶ INICIAR</button>';
+      } else {
+        var n=DB.notas.filter(function(nn){return nn.examenId===x.id;}).length;
+        accion='<button class="btn btn-gris btn-mini" onclick="verResultadosExamen(\''+q(x.id)+'\')">👥 Resultados ('+n+')</button>';
+      }
+      return '<tr><td><b>'+esc(x.titulo)+'</b><br><small style="color:#888">'+esc(x.docente||'')+'</small></td><td>'+esc(x.curso)+'</td><td>'+x.duracion+' min</td><td>'+x.preguntas.length+'</td><td>'+accion+'</td></tr>';
+    }).join('')+'</table></div>':'<div class="vacio">No hay exámenes publicados</div>';
+}
+var EXAMEN_ACTIVO=null, EXAMEN_FIN=null, EXAMEN_TIMER=null;
+function iniciarExamen(id){
+  var x=DB.examenes.find(function(e){return e.id===id;});
+  if(!x||!x.preguntas||!x.preguntas.length){ toast('Examen no disponible','err'); return; }
+  if(DB.notas.some(function(n){return n.examenId===id&&sameUser(n.estudiante,SESION.usuario);})){ toast('Ya rindió este examen','err'); return; }
+  EXAMEN_ACTIVO={ex:x};
+  EXAMEN_FIN=Date.now()+x.duracion*60000;
+  document.getElementById('exTituloPanel').textContent='🧪 '+x.titulo;
+  document.getElementById('exPreguntas').innerHTML=x.preguntas.map(function(p,i){
+    return '<div class="pregunta"><p>'+(i+1)+'. '+esc(p.q)+'</p>'+p.ops.map(function(o){
+      return '<label class="opcion"><input type="radio" name="exq'+i+'" value="'+esc(o)+'">'+esc(o)+'</label>';
+    }).join('')+'</div>';
+  }).join('');
+  irA('examen-activo');
+  clearInterval(EXAMEN_TIMER);
+  EXAMEN_TIMER=setInterval(tickExamen,1000);
+  tickExamen();
+}
+function tickExamen(){
+  if(!EXAMEN_ACTIVO) return;
+  var restante=EXAMEN_FIN-Date.now();
+  if(restante<=0){ finalizarExamen(true); return; }
+  var s=Math.floor(restante/1000),m=Math.floor(s/60),ss=s%60;
+  document.getElementById('exCrono').textContent=String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+  var total=EXAMEN_ACTIVO.ex.duracion*60;
+  document.getElementById('exBarra').style.width=Math.max(0,Math.min(100,(s/total)*100))+'%';
+}
+function finalizarExamen(auto){
+  if(!EXAMEN_ACTIVO) return;
+  clearInterval(EXAMEN_TIMER);
+  var x=EXAMEN_ACTIVO.ex, correct=0;
+  x.preguntas.forEach(function(p,i){
+    var sel=document.querySelector('input[name=exq'+i+']:checked');
+    if(sel&&sel.value===p.ok) correct++;
+  });
+  var nota=Math.round(correct/x.preguntas.length*100);
+  var n={id:uid(),estudiante:SESION.usuario,curso:SESION.curso||x.curso,evaluacion:x.titulo,
+    tipo:'Examen',nota:String(nota),fecha:ahora(),examenId:x.id,dim:'Saber',
+    retro:(auto?'Enviado automáticamente al agotarse el tiempo. ':'')+'Correctas: '+correct+' de '+x.preguntas.length};
+  DB.notas.push(n); guardar(); syncNota(n);
+  EXAMEN_ACTIVO=null;
+  toast('Examen entregado. Nota: '+nota+'/100 (dimensión SABER)','ok');
+  irA('examenes'); refrescarTodo();
+}
+
+/* ================= ENTREGAS + CALIFICACIÓN ================= */
+function subirEntrega(){
+  var tareaId=document.getElementById('entTarea').value;
+  var t=DB.tareas.find(function(x){return x.id===tareaId;});
+  var f=document.getElementById('entArchivo').files[0];
+  var coment=document.getElementById('entComent').value.trim();
+  if(!t){ toast('Seleccione una tarea','err'); return; }
+  if(!f){ toast('Adjunte un archivo','err'); return; }
+  if(f.size>MAX_DRIVE){ toast('Supera 30 MB. Suba el archivo a Drive y envíe el enlace por comentario.','err'); return; }
+  var fr=new FileReader();
+  fr.onload=function(){
+    subirDrive(f.name,f.type,fr.result,function(url){
+      var e={id:uid(),tareaId:t.id,tarea:t.titulo,estudiante:SESION.usuario,curso:SESION.curso,
+        archivo:f.name,fecha:ahora(),estado:'Entregado',comentario:coment};
+      if(url) e.adjunto={nombre:f.name,tipo:'drive',data:url};
+      else if(f.size<=MAX_LOCAL) e.adjunto={nombre:f.name,tipo:'local',data:fr.result};
+      DB.entregas.push(e); guardar(); syncSheets();
+      document.getElementById('entArchivo').value=''; document.getElementById('entComent').value='';
+      toast('Trabajo entregado: «'+t.titulo+'»','ok'); refrescarTodo();
+    });
+  };
+  fr.readAsDataURL(f);
+}
+function pintarEntregas(){
+  var en=entregasVisibles().slice().reverse();
+  var div=document.getElementById('listaEntregas'); if(!div) return;
+  if(!en.length){ div.innerHTML='<div class="vacio">Sin entregas registradas</div>'; return; }
+  var esDoc=SESION.rol==='docente';
+  div.innerHTML='<div class="tableWrap"><table><tr>'
+    +(esDoc?'<th>Estudiante</th>':'')+'<th>Tarea / Práctica</th><th>Fecha</th><th>Archivo</th><th>Estado</th><th>Calificación</th>'
+    +(esDoc?'<th>Acción</th>':'')+'</tr>'
+    +en.map(function(e){
+      var t=DB.tareas.find(function(x){return x.id===e.tareaId;})||{titulo:e.titulo,tipo:''};
+      var n=DB.notas.find(function(x){return sameUser(x.estudiante,e.estudiante)&&x.evaluacion===(t.titulo||e.tarea);});
+      var cal=n?('<b>'+esc(n.nota)+'</b>/100 '+pillDim(dimDeNota(n))+(n.retro?'<br><small style="color:#888">💬 '+esc(n.retro)+'</small>':''))
+        :'<span class="pill naranja">SIN CALIFICAR</span>';
+      var est=e.estado==='Calificado'?'<span class="pill azul">CALIFICADO</span>':'<span class="pill verde">ENTREGADO</span>';
+      return '<tr>'
+        +(esDoc?'<td><b>'+esc(nombreDeUsuario(e.estudiante))+'</b><br><small style="color:#888">@'+esc(e.estudiante)+'</small></td>':'')
+        +'<td><b>'+esc(t.titulo||e.tarea)+'</b><br><span class="pill azul">'+esc(t.tipo||'Trabajo')+'</span>'+(e.comentario?'<br><small style="color:#888">💬 '+esc(e.comentario)+'</small>':'')+'</td>'
+        +'<td>'+fechaBonita(e.fecha)+'</td>'
+        +'<td>'+(e.adjunto||e.contenido?'<button class="btn btn-primario btn-mini" onclick="verAdjuntoEntrega(\''+q(e.id)+'\')">📎 Ver</button>':'<span style="color:#bbb">—</span>')+'</td>'
+        +'<td>'+est+'</td><td>'+cal+'</td>'
+        +(esDoc?'<td><button class="btn btn-verde btn-mini" onclick="abrirCalificar(\''+q(e.id)+'\')">✏ Calificar</button></td>':'')
+        +'</tr>';
+    }).join('')+'</table></div>';
+}
+var CAL_ENTREGA=null;
+function abrirCalificar(id){
+  if(SESION.rol!=='docente'){ toast('Solo el docente puede calificar','err'); return; }
+  var e=DB.entregas.find(function(x){return x.id===id;}); if(!e) return;
+  CAL_ENTREGA=e;
+  var t=DB.tareas.find(function(x){return x.id===e.tareaId;})||{titulo:e.titulo,tipo:'Trabajo'};
+  var existente=DB.notas.find(function(x){return sameUser(x.estudiante,e.estudiante)&&x.evaluacion===(t.titulo||e.tarea);});
+  document.getElementById('calInfo').innerHTML='<b>Estudiante:</b> '+esc(nombreDeUsuario(e.estudiante))
+    +'<br><b>Trabajo:</b> '+esc(t.titulo||e.titulo)+' ('+esc(t.tipo||'')+')'
+    +'<br><b>Entregado:</b> '+fechaBonita(e.fecha)+(e.comentario?'<br><b>Comentario del estudiante:</b> '+esc(e.comentario):'');
+  document.getElementById('calNota').value=existente?parseNota(existente.nota):'';
+  document.getElementById('calDim').value=(existente&&existente.dim)||'Hacer';
+  document.getElementById('calRetro').value=existente?(existente.retro||''):'';
+  document.getElementById('modalCalificar').classList.add('abierto');
+}
+function cerrarCalificar(){ document.getElementById('modalCalificar').classList.remove('abierto'); CAL_ENTREGA=null; }
+function guardarCalificacion(){
+  if(!CAL_ENTREGA||SESION.rol!=='docente'){ toast('Sesión de calificación inválida','err'); return; }
+  var nota=+document.getElementById('calNota').value;
+  if(isNaN(nota)||nota<0||nota>100||String(document.getElementById('calNota').value).trim()===''){
+    toast('La calificación debe ser un número entre 0 y 100','err'); return;
+  }
+  var dim=document.getElementById('calDim').value;
+  var retro=document.getElementById('calRetro').value.trim();
+  var e=CAL_ENTREGA;
+  var t=DB.tareas.find(function(x){return x.id===e.tareaId;})||{titulo:e.titulo,tipo:'Trabajo'};
+  var tituloEval=t.titulo||e.tarea;
+  var n=DB.notas.find(function(x){return sameUser(x.estudiante,e.estudiante)&&x.evaluacion===tituloEval;});
+  if(n){
+    n.nota=String(Math.round(nota)); n.dim=dim; n.retro=retro; n.fecha=ahora();
+    if(t.curso) n.curso=t.curso;
+  } else {
+    n={id:uid(),estudiante:e.estudiante,curso:t.curso||e.curso||'',evaluacion:tituloEval,
+       tipo:t.tipo||'Trabajo',nota:String(Math.round(nota)),fecha:ahora(),examenId:'',dim:dim,retro:retro};
+    DB.notas.push(n);
+  }
+  e.estado='Calificado';
+  guardar(); syncNota(n);
+  cerrarCalificar();
+  toast('Calificación registrada: '+Math.round(nota)+'/100 ('+dim.toUpperCase()+')','ok');
+  refrescarTodo();
+}
+
+/* ================= REPORTES / CSV ================= */
+function pintarReportes(){
+  var div=document.getElementById('tablaReportes'); if(!div) return;
+  var ns=SESION.rol==='docente'?DB.notas:DB.notas.filter(function(n){return sameUser(n.estudiante,SESION.usuario);});
+  ns=ns.slice().reverse();
+  div.innerHTML=ns.length?'<div class="tableWrap"><table><tr><th>'+(SESION.rol==='docente'?'Estudiante':'Evaluación')+'</th><th>Tipo</th><th>Dimensión</th><th>Nota</th><th>Eq.</th><th>Fecha</th><th>Retroalimentación</th></tr>'
+    +ns.map(function(n){
+      var nota=parseNota(n.nota);
+      return '<tr><td><b>'+esc(SESION.rol==='docente'?nombreDeUsuario(n.estudiante):n.evaluacion)+'</b></td>'
+        +'<td>'+esc(n.tipo||'—')+'</td><td>'+pillDim(dimDeNota(n))+'</td>'
+        +'<td><b>'+(nota==null?esc(n.nota||'—'):nota+'/100')+'</b></td>'
+        +'<td><span class="pill azul">'+notaCual(nota)+'</span></td>'
+        +'<td>'+fechaCorta(n.fecha)+'</td><td>'+esc(n.retro||'—')+'</td></tr>';
+    }).join('')+'</table></div>'
+    +'<p class="repNota">Eq. = equivalencia cualitativa (E=Excelente · S=Satisfactorio · M=Moderado · I=Inicial) — referencia de los Cuadernos Pedagógicos del ME Bolivia.</p>'
+    :'<div class="vacio">Sin calificaciones registradas</div>';
+}
+function exportarCSV(){
+  var filas=[['Estudiante','Curso','Evaluacion','Tipo','Dimension','Nota','Fecha','Retroalimentacion']];
+  var ns=SESION.rol==='docente'?DB.notas:DB.notas.filter(function(n){return sameUser(n.estudiante,SESION.usuario);});
+  ns.forEach(function(n){
+    filas.push([nombreDeUsuario(n.estudiante),n.curso,n.evaluacion,n.tipo,dimDeNota(n),n.nota,fechaCorta(n.fecha),n.retro||'']);
+  });
+  var csv=filas.map(function(f){ return f.map(function(c){ return '"'+String(c==null?'':c).replace(/"/g,'""')+'"'; }).join(';'); }).join('\n');
+  var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='calificaciones_'+hoyISO()+'.csv';
+  a.click();
+  toast('CSV exportado ('+ns.length+' registros)','ok');
+}
+
+/* ================= ASISTENCIA (DOCENTE) ================= */
+function estudiantesDeCurso(curso){
+  return (CACHE_USUARIOS||[]).filter(function(u){ return u.rol==='estudiante'&&u.curso===curso; });
+}
+function cargarListaAsistencia(){
+  var curso=document.getElementById('asCurso')?document.getElementById('asCurso').value:'';
+  var fecha=document.getElementById('asFecha')?(document.getElementById('asFecha').value||hoyISO()):hoyISO();
+  var est=estudiantesDeCurso(curso);
+  var div=document.getElementById('listaAsistencia'); if(!div) return;
+  if(!est.length){ div.innerHTML='<div class="vacio">No hay estudiantes registrados en '+esc(curso)+'. Regístrelos en «Usuarios».</div>'; return; }
+  div.innerHTML=est.map(function(u){
+    var reg=DB.asistencia.find(function(a){ return a.fecha===fecha&&sameUser(a.estudiante,u.usuario); });
+    var estado=reg?reg.estado:'';
+    var botones=[['P','Presente'],['T','Atraso'],['J','Aus. justificada'],['A','Ausente']].map(function(o){
+      return '<button class="btnAs '+(estado===o[0]?'btnAsActiva':'')+'" onclick="setEstadoAsistencia(\''+q(u.usuario)+'\',\''+o[0]+'\')"><b>'+o[0]+'</b> '+o[1]+'</button>';
+    }).join('');
+    return '<div class="filaEstudiante"><div style="min-width:170px"><b>'+esc(u.nombre)+'</b><br><small style="color:#888">@'+esc(u.usuario)+'</small></div><div class="botonesAsistencia">'+botones+'</div></div>';
+  }).join('');
+}
+function setEstadoAsistencia(usuario,estado){
+  if(!SESION||SESION.rol!=='docente'){ toast('Solo el docente puede registrar asistencia','err'); return; }
+  var curso=document.getElementById('asCurso').value;
+  var fecha=document.getElementById('asFecha').value||hoyISO();
+  var i=DB.asistencia.findIndex(function(a){ return a.fecha===fecha&&sameUser(a.estudiante,usuario); });
+  if(i>=0){ DB.asistencia[i].estado=estado; DB.asistencia[i].docente=SESION.nombre; }
+  else{
+    var u=(CACHE_USUARIOS||[]).find(function(x){ return sameUser(x.usuario,usuario); });
+    DB.asistencia.push({id:uid(),fecha:fecha,curso:curso,estudiante:usuario,nombre:u?u.nombre:usuario,estado:estado,docente:SESION.nombre,observacion:''});
+  }
+  guardar(); cargarListaAsistencia(); syncSheets();
+  if(estado==='A') notificarAusencia(usuario,fecha,curso);
+}
+function marcarTodos(estado){
+  var curso=document.getElementById('asCurso').value;
+  var fecha=document.getElementById('asFecha').value||hoyISO();
+  var estudiantes=estudiantesDeCurso(curso);
+  estudiantes.forEach(function(u){
+    var i=DB.asistencia.findIndex(function(a){ return a.fecha===fecha&&sameUser(a.estudiante,u.usuario); });
+    if(i>=0){ DB.asistencia[i].estado=estado; DB.asistencia[i].docente=SESION.nombre; }
+    else DB.asistencia.push({id:uid(),fecha:fecha,curso:curso,estudiante:u.usuario,nombre:u.nombre,estado:estado,docente:SESION.nombre,observacion:''});
+    if(estado==='A') notificarAusencia(u.usuario,fecha,curso);
+  });
+  guardar(); cargarListaAsistencia(); syncSheets();
+  toast('Asistencia registrada para todo el curso ('+estado+')','ok');
+}
+function notificarAusencia(estudiante,fecha,curso){
+  var url=getUrl(); if(!url) return;
+  if(String(DB.cfg.notif_email||'SI').toUpperCase()==='NO') return;
+  var t=(CACHE_USUARIOS||[]).find(function(x){ return x.rol==='tutor'&&sameUser(x.hijo,estudiante); });
+  fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'notificar',tipo:'ausencia',estudiante:estudiante,fecha:fecha,curso:curso})})
+    .then(function(){ if(t&&t.email) toast('📧 Notificación de ausencia enviada al tutor','ok'); })
+    .catch(function(){});
+}
+
+/* ================= OBSERVACIONES + VALORACIONES (DOCENTE) ================= */
+function poblarObsEstudiantes(){
+  var curso=document.getElementById('obsCurso').value;
+  var sel=document.getElementById('obsEstudiante');
+  var est=estudiantesDeCurso(curso);
+  sel.innerHTML=est.length?est.map(function(u){ return '<option value="'+esc(u.usuario)+'">'+esc(u.nombre)+'</option>'; }).join(''):'<option value="">Sin estudiantes</option>';
+  pintarObs();
+}
+function guardarObservacion(){
+  if(!SESION||SESION.rol!=='docente'){ toast('Solo el docente puede registrar observaciones','err'); return; }
+  var est=document.getElementById('obsEstudiante').value,
+      tipo=document.getElementById('obsTipo').value,
+      txt=document.getElementById('obsTexto').value.trim();
+  if(!est){ toast('Seleccione estudiante','err'); return; }
+  if(!txt){ toast('Escriba la observación','err'); return; }
+  var o={id:uid(),estudiante:est,fecha:ahora(),tipo:tipo,texto:txt,docente:SESION.nombre};
+  DB.obs.push(o); guardar(); syncSheets();
+  document.getElementById('obsTexto').value='';
+  pintarObs(); toast('Observación registrada','ok');
+}
+function borrarObservacion(id){
+  DB.obs=DB.obs.filter(function(o){return o.id!==id;}); guardar();
+  var url=getUrl();
+  if(url) fetch(url,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'eliminar',hoja:'Observaciones',id:id})}).catch(function(){});
+  pintarObs(); toast('Observación eliminada');
+}
+function pintarObs(){
+  var div=document.getElementById('listaObs'); if(!div) return;
+  var est=document.getElementById('obsEstudiante')?document.getElementById('obsEstudiante').value:'';
+  var lista=DB.obs.filter(function(o){ return !est||sameUser(o.estudiante,est); }).slice().reverse();
+  div.innerHTML=lista.length?lista.map(function(o){
+    return '<div class="obsItem"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:5px">'
+      +pillTipoObs(o.tipo)+'<b style="font-size:13px">'+esc(nombreDeUsuario(o.estudiante))+'</b>'
+      +'<small style="color:#888">'+fechaBonita(o.fecha)+' · '+esc(o.docente||'')+'</small></div>'
+      +'<p style="font-size:13.5px;line-height:1.6">'+esc(o.texto)+'</p>'
+      +'<button class="btn btn-peligro btn-mini" onclick="borrarObservacion(\''+q(o.id)+'\')">✖ Eliminar</button></div>';
+  }).join(''):'<div class="vacio">Sin observaciones registradas</div>';
+}
+function refrescarPantallasObs(){
+  try{
+    var vp=document.getElementById('vista-padre');
+    if(vp&&vp.style.display!=='none'&&SESION&&SESION.rol==='tutor') pintarReportePadre();
+    var vo=document.getElementById('vista-observaciones');
+    if(vo&&vo.style.display!=='none'&&SESION&&SESION.rol==='docente') pintarObs();
+  }catch(e){}
+}
+function poblarValEstudiantes(){
+  var curso=document.getElementById('valCurso').value;
+  var sel=document.getElementById('valEstudiante');
+  var est=estudiantesDeCurso(curso);
+  sel.innerHTML=est.length?est.map(function(u){ return '<option value="'+esc(u.usuario)+'">'+esc(u.nombre)+'</option>'; }).join(''):'<option value="">Sin estudiantes</option>';
+  pintarValoraciones();
+}
+function valoracionManual(estudiante,dim){
+  var lista=DB.notas.filter(function(n){
+    return sameUser(n.estudiante,estudiante)&&dimDeNota(n)===dim&&String(n.tipo||'').toLowerCase().indexOf('valoraci')>=0;
+  }).sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); });
+  return lista.length?parseNota(lista[0].nota):null;
+}
+function pintarValoraciones(){
+  var est=document.getElementById('valEstudiante')?document.getElementById('valEstudiante').value:'';
+  var s=document.getElementById('valSer'), d=document.getElementById('valDecidir');
+  if(!s||!d||!est){ return; }
+  var ser=valoracionManual(est,'Ser'), dec=valoracionManual(est,'Decidir');
+  s.value=ser==null?'':ser;
+  d.value=dec==null?'':dec;
+}
+function guardarValoracion(){
+  if(!SESION||SESION.rol!=='docente'){ toast('Solo el docente puede registrar valoraciones','err'); return; }
+  var est=document.getElementById('valEstudiante').value;
+  if(!est){ toast('Seleccione estudiante','err'); return; }
+  var ser=document.getElementById('valSer').value.trim(),
+      dec=document.getElementById('valDecidir').value.trim();
+  if(ser===''&&dec===''){ toast('Registre al menos una valoración (SER o DECIDIR)','err'); return; }
+  var curso=(CACHE_USUARIOS||[]).find(function(x){return sameUser(x.usuario,est);});
+  var cursoNom=curso?curso.curso:'';
+  function upsert(dim,valor){
+    var evalN='Valoración '+dim;
+    var n=DB.notas.find(function(x){ return sameUser(x.estudiante,est)&&x.evaluacion===evalN; });
+    if(n){ n.nota=String(Math.round(valor)); n.fecha=ahora(); n.dim=dim; }
+    else{
+      n={id:uid(),estudiante:est,curso:cursoNom,evaluacion:evalN,tipo:'Valoración',
+         nota:String(Math.round(valor)),fecha:ahora(),examenId:'',dim:dim,retro:'Valoración registrada por el docente'};
+      DB.notas.push(n);
+    }
+    syncNota(n);
+  }
+  if(ser!==''){ var sv=+ser; if(isNaN(sv)||sv<0||sv>100){ toast('SER debe estar entre 0 y 100','err'); return; } upsert('Ser',sv); }
+  if(dec!==''){ var dv=+dec; if(isNaN(dv)||dv<0||dv>100){ toast('DECIDIR debe estar entre 0 y 100','err'); return; } upsert('Decidir',dv); }
+  guardar();
+  toast('Valoración(es) guardada(s) — SER: '+(ser===''?'auto':ser)+'/100 · DECIDIR: '+(dec===''?'auto':dec)+'/100','ok');
+  refrescarTodo();
+}
+
+/* ================= MENSAJERÍA ================= */
+function poblarMsgDestinatarios(){
+  var sel=document.getElementById('msgPara'); if(!sel||!SESION) return;
+  var cc=document.getElementById('campoMsgCurso');
+  if(cc) cc.style.display=SESION.rol==='docente'?'block':'none';
+  var opts=[];
+  if(SESION.rol==='docente'){
+    var curso=document.getElementById('msgCurso').value;
+    var tutores=(CACHE_USUARIOS||[]).filter(function(t){
+      if(t.rol!=='tutor'||!t.hijo) return false;
+      var h=(CACHE_USUARIOS||[]).find(function(x){ return sameUser(x.usuario,t.hijo); });
+      return h&&h.curso===curso;
+    });
+    opts=tutores.map(function(t){
+      var h=(CACHE_USUARIOS||[]).find(function(x){ return sameUser(x.usuario,t.hijo); });
+      return {v:t.usuario,t:t.nombre+(h?' — tutor de '+h.nombre:'')+(t.email?' 📧':'')};
+    });
+    if(!opts.length) opts=[{v:'',t:'(este curso no tiene tutores vinculados)'}];
+  } else {
+    var al=(CACHE_USUARIOS||[]).find(function(x){ return sameUser(x.usuario,SESION.hijo); });
+    var cursoHijo=al?al.curso:'';
+    var activos={};
+    DB.tareas.concat(DB.examenes).forEach(function(x){ if(x.curso===cursoHijo&&x.docente) activos[x.docente]=1; });
+    var docs=(CACHE_USUARIOS||[]).filter(function(x){ return x.rol==='docente'; });
+    opts=docs.map(function(d){ return {v:d.usuario,t:d.nombre+(activos[d.nombre]?' ★ (enseña a su hijo/a)':'')+(d.email?' 📧':'')}; });
+    if(!opts.length) opts=[{v:'',t:'(sin docentes registrados)'}];
+  }
+  sel.innerHTML=opts.map(function(o){ return '<option value="'+esc(o.v)+'">'+esc(o.t)+'</option>'; }).join('');
+}
+function enviarMensaje(){
+  var para=document.getElementById('msgPara').value,
+      txt=document.getElementById('msgTexto').value.trim();
+  if(!para){ toast('Seleccione destinatario','err'); return; }
+  if(!txt){ toast('Escriba el mensaje','err'); return; }
+  var m={id:uid(),fecha:ahora(),de:SESION.usuario,deNombre:SESION.nombre,para:para,texto:txt};
+  DB.mensajes.push(m); guardar(); syncSheets();
+  var url=getUrl();
+  if(url) fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({accion:'notificar',tipo:'mensaje',para:para,deNombre:SESION.nombre,texto:txt})}).catch(function(){});
+  document.getElementById('msgTexto').value='';
+  pintarMensajes(); toast('Mensaje enviado','ok');
+}
+function leidos(){
+  try{ return JSON.parse(localStorage.getItem('sga_leidos')||'[]'); }catch(e){ return []; }
+}
+function marcarLeidos(){
+  var L=leidos();
+  DB.mensajes.forEach(function(m){
+    if(sameUser(m.para,SESION.usuario)&&L.indexOf(m.id)<0) L.push(m.id);
+  });
+  try{ localStorage.setItem('sga_leidos',JSON.stringify(L)); }catch(e){}
+  actualizarBadgeMensajes();
+}
+function actualizarBadgeMensajes(){
+  var b=document.getElementById('badgeMensajes'); if(!b||!SESION) return;
+  var L=leidos();
+  var n=DB.mensajes.filter(function(m){ return sameUser(m.para,SESION.usuario)&&L.indexOf(m.id)<0; }).length;
+  if(n>0){ b.textContent=n; b.style.display='inline-block'; } else b.style.display='none';
+}
+function pintarMensajes(){
+  marcarLeidos();
+  poblarMsgDestinatarios();
+  var div=document.getElementById('listaMensajes'); if(!div) return;
+  var L=leidos();
+  var lista=DB.mensajes.filter(function(m){ return sameUser(m.de,SESION.usuario)||sameUser(m.para,SESION.usuario); })
+    .sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); }).slice(0,50);
+  div.innerHTML=lista.length?lista.map(function(m){
+    var mio=sameUser(m.de,SESION.usuario);
+    var nuevo=!mio&&L.indexOf(m.id)<0;
+    return '<div class="msgCard'+(mio?' propio':'')+'">'
+      +'<div class="msgCab"><b>'+esc(m.deNombre||m.de)+'</b><small>'+(mio?'Para: '+esc(nombreDeUsuario(m.para)):'De: '+esc(m.deNombre||m.para))+' · '+fechaBonita(m.fecha)+'</small>'
+      +(nuevo?' <span class="pill rojo">NUEVO</span>':'')+'</div>'
+      +'<p>'+esc(m.texto)+'</p>'
+      +(mio?'':'<button class="btn btn-primario btn-mini" onclick="responderMensaje(\''+q(m.de)+'\')">↩ Responder</button>')
+      +'</div>';
+  }).join(''):'<div class="vacio">Sin mensajes todavía</div>';
+}
+function responderMensaje(usuario){
+  irA('mensajes');
+  var sel=document.getElementById('msgPara');
+  if(sel){
+    var existe=Array.prototype.some.call(sel.options,function(o){ return o.value===usuario; });
+    if(!existe&&usuario){
+      var op=document.createElement('option');
+      op.value=usuario; op.textContent=nombreDeUsuario(usuario);
+      sel.appendChild(op);
+    }
+    sel.value=usuario;
+  }
+  var t=document.getElementById('msgTexto'); if(t) t.focus();
+}
+
+/* ================= CÁLCULO DEL REPORTE (PONDERADO) ================= */
+function calcularReporte(trim){
+  trim=String(trim||'0');
+  var usuarios=CACHE_USUARIOS||[];
+  var alumno=usuarios.find(function(x){ return sameUser(x.usuario,SESION.hijo); });
+  var nombreAl=alumno?(alumno.nombre||SESION.hijo):SESION.hijo;
+  var curso=alumno?(alumno.curso||''):'';
+  var anio=new Date().getFullYear();
+  var periodoLabel=trim==='0'?('Gestión completa '+anio):({'1':'1er Trimestre','2':'2do Trimestre','3':'3er Trimestre'}[trim]+' — '+anio);
+  var pesos=pesosActuales();
+  var nmin=notaMinima();
+
+  var registros=DB.asistencia.filter(function(a){ return sameUser(a.estudiante,SESION.hijo)&&enTrimestre(a.fecha,trim); })
+    .sort(function(a,b){ return new Date(a.fecha)-new Date(b.fecha); });
+  var presentes=registros.filter(function(a){return a.estado==='P';}).length,
+      atrasos=registros.filter(function(a){return a.estado==='T';}).length,
+      just=registros.filter(function(a){return a.estado==='J';}).length,
+      aus=registros.filter(function(a){return a.estado==='A';}).length;
+  var total=registros.length;
+  var pct=total?Math.round((presentes+atrasos)/total*100):null;
+
+  var tareas=DB.tareas.filter(function(t){ return t.curso===curso&&enTrimestre(t.limite,trim); });
+  var misEntregas=DB.entregas.filter(function(e){ return sameUser(e.estudiante,SESION.hijo); });
+  var trabajos=tareas.map(function(t){
+    var ent=misEntregas.find(function(e){ return e.tareaId===t.id||e.tarea===t.titulo; });
+    var n=DB.notas.find(function(x){ return sameUser(x.estudiante,SESION.hijo)&&x.evaluacion===t.titulo; });
+    return {titulo:t.titulo,tipo:t.tipo,limmite:t.limite,limite:t.limite,
+            estado:ent?'ENTREGADA':(new Date(t.limite)<new Date()?'VENCIDA':'PENDIENTE'),
+            entregado:ent?fechaCorta(ent.fecha):'—',tarde:ent?(new Date(ent.fecha)>new Date(t.limite)):false,
+            nota:n?parseNota(n.nota):null,dim:n?dimDeNota(n):null,retro:n?(n.retro||''):'',docente:t.docente};
+  });
+  var entregadas=trabajos.filter(function(t){ return t.estado==='ENTREGADA'; }).length;
+
+  var examenes=DB.examenes.filter(function(x){ return x.curso===curso; }).map(function(x){
+    var n=DB.notas.find(function(y){ return sameUser(y.estudiante,SESION.hijo)&&(y.examenId===x.id||y.evaluacion===x.titulo); });
+    return {titulo:x.titulo,duracion:x.duracion,nota:n?parseNota(n.nota):null,fechaNota:n?fechaCorta(n.fecha):'—',docente:x.docente,retro:n?(n.retro||''):''};
+  });
+
+  /* Notas del período clasificadas por dimensión */
+  var notasPeriodo=DB.notas.filter(function(n){ return sameUser(n.estudiante,SESION.hijo)&&enTrimestre(n.fecha,trim); });
+  var saber=promedioLista(notasPeriodo.filter(function(n){return dimDeNota(n)==='Saber';}).map(function(n){return parseNota(n.nota);}));
+  var hacer=promedioLista(notasPeriodo.filter(function(n){return dimDeNota(n)==='Hacer';}).map(function(n){return parseNota(n.nota);}));
+  var serManual=valoracionManualPeriodo(SESION.hijo,'Ser',trim);
+  var decManual=valoracionManualPeriodo(SESION.hijo,'Decidir',trim);
+  var ratioEntrega=tareas.length?Math.round(entregadas/tareas.length*100):null;
+  var ser=(serManual!=null?serManual:(pct!=null?pct:null));
+  var decidir=(decManual!=null?decManual:(ratioEntrega!=null?ratioEntrega:null));
+  var origen={
+    ser:serManual!=null?'Manual (docente)':(pct!=null?'Automática — asistencia':'Sin datos'),
+    decidir:decManual!=null?'Manual (docente)':(ratioEntrega!=null?'Automática — entregas':'Sin datos'),
+    saber:saber!=null?'Exámenes calificados':'Sin datos',
+    hacer:hacer!=null?'Trabajos/prácticas calificados':'Sin datos'
+  };
+
+  /* ★ Promedio final ponderado (dimensiones sin datos se re-normalizan) */
+  var pares=[[ser,pesos.ser],[saber,pesos.saber],[hacer,pesos.hacer],[decidir,pesos.decidir]];
+  var acum=0, wsum=0, sinDatos=[];
+  pares.forEach(function(pp){
+    if(pp[0]!=null){ acum+=pp[0]*pp[1]; wsum+=pp[1]; }
+    else sinDatos.push(pp[1]);
+  });
+  var promedio=wsum>0?Math.round(acum/wsum):null;
+  var aprobado=(promedio!=null&&promedio>=nmin);
+
+  var obsDoc=DB.obs.filter(function(o){ return sameUser(o.estudiante,SESION.hijo)&&enTrimestre(o.fecha,trim); })
+    .sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); });
+
+  var hace15=new Date(Date.now()-15*86400000);
+  var ausRec=registros.filter(function(a){ return a.estado==='A'&&new Date(a.fecha)>=hace15; }).length;
+  var vencidas=trabajos.filter(function(t){ return t.estado==='VENCIDA'; });
+  var sinRendir=examenes.filter(function(x){ return x.nota==null; });
+  var alertas=[];
+  if(ausRec>0) alertas.push('🔴 Ausencias injustificadas en los últimos 15 días: '+ausRec+'.');
+  if(vencidas.length) alertas.push('🔴 Trabajos/prácticas vencidos sin entregar: '+vencidas.map(function(t){return esc(t.titulo);}).join(', ')+'.');
+  if(sinRendir.length) alertas.push('🟠 Exámenes sin nota registrada: '+sinRendir.length+'.');
+  if(pct!=null&&pct<80) alertas.push('🔴 La asistencia ('+pct+'%) está por debajo del 80% exigido.');
+  if(saber==null) alertas.push('🟠 Aún no hay calificaciones en la dimensión SABER (exámenes).');
+  if(hacer==null&&tareas.length) alertas.push('🟠 Aún no hay calificaciones en la dimensión HACER (trabajos/prácticas).');
+  if(!alertas.length) alertas.push('🟢 Sin alertas: el/la estudiante está al día.');
+
+  var docentes={};
+  trabajos.forEach(function(t){ if(t.docente) docentes[t.docente]=1; });
+  examenes.forEach(function(x){ if(x.docente) docentes[x.docente]=1; });
+
+  var obs=[];
+  obs.push('Durante el período «'+periodoLabel+'» se asignaron '+tareas.length+' trabajos/prácticas; el/la estudiante presentó '+entregadas+'.');
+  if(pct!=null) obs.push('Asistencia registrada: '+pct+'% ('+(pct>=80?'cumple':'NO cumple')+' el mínimo del 80% exigido).');
+  else obs.push('Aún no hay registros de asistencia para este período.');
+  obs.push('Ponderación aplicada: SER '+pesos.ser+'% · SABER '+pesos.saber+'% · HACER '+pesos.hacer+'% · DECIDIR '+pesos.decidir+'%. Promedio final = Σ(nota × peso)/100'+(sinDatos.length?' (se re-normalizan las dimensiones con datos)':'')+'.');
+  if(promedio!=null) obs.push('Promedio final: '+promedio+'/100 — '+(aprobado?'APROBADO (≥ '+nmin+').':'EN PROCESO (< '+nmin+'); se recomienda refuerzo educativo comunitario.'));
+  if(pct!=null&&pct<80) obs.push('⚠️ Aunque el promedio lo alcance, la asistencia inferior al 80% impide la promoción según normativa vigente.');
+
+  return {alumno:nombreAl,curso:curso,anio:anio,periodoLabel:periodoLabel,pesos:pesos,nmin:nmin,
+    asistencia:{registros:registros,total:total,presentes:presentes,atrasos:atrasos,justificadas:just,injustificadas:aus,pct:pct,cumple:(pct!=null&&pct>=80)},
+    trabajos:trabajos,tareas:tareas,entregadas:entregadas,examenes:examenes,
+    ser:ser,saber:saber,hacer:hacer,decidir:decidir,origen:origen,
+    promedio:promedio,aprobado:aprobado,
+    obsDoc:obsDoc,alertas:alertas,
+    docentes:Object.keys(docentes),observaciones:obs};
+}
+function valoracionManualPeriodo(estudiante,dim,trim){
+  var lista=DB.notas.filter(function(n){
+    return sameUser(n.estudiante,estudiante)&&dimDeNota(n)===dim
+      &&String(n.tipo||'').toLowerCase().indexOf('valoraci')>=0&&enTrimestre(n.fecha,trim);
+  }).sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); });
+  return lista.length?parseNota(lista[0].nota):null;
+}
+
+/* ================= REPORTE EN PANTALLA (TUTOR) ================= */
+function pintarReportePadre(){
+  var cont=document.getElementById('reportePadre'); if(!cont) return;
+  if(!SESION||SESION.rol!=='tutor'){ cont.innerHTML='<div class="vacio">Vista exclusiva para tutores.</div>'; return; }
+  var R=calcularReporte((document.getElementById('padreTrimestre')||{}).value||'0');
+  var c=cfgActual();
+  var h='';
+  h+='<div class="panel"><h3>📋 Datos informativos — '+esc(R.periodoLabel)+'</h3><div class="repGrid">'
+   +'<div><b>Unidad Educativa:</b> '+esc(c.linea1+' '+c.linea2)+'</div>'
+   +'<div><b>Estudiante:</b> '+esc(R.alumno)+'</div><div><b>Curso:</b> '+esc(R.curso||'—')+'</div>'
+   +'<div><b>Gestión:</b> '+R.anio+'</div><div><b>Tutor:</b> '+esc(SESION.nombre)+'</div>'
+   +'<div><b>Emitido:</b> '+fechaBonita(ahora())+'</div></div></div>';
+  h+='<div class="panel"><h3>🔔 Alertas del período</h3>'
+   +R.alertas.map(function(a){ return '<div class="alertaItem">'+a+'</div>'; }).join('')+'</div>';
+  h+='<div class="tarjetas">'
+   +'<div class="tarjeta '+(R.asistencia.cumple?'verde':'roja')+'"><div><h4>ASISTENCIA</h4><div class="num">'+(R.asistencia.pct==null?'—':R.asistencia.pct+'%')+'</div><div class="sub">'+R.asistencia.total+' días registrados</div></div><div class="tIco '+(R.asistencia.cumple?'ve':'ro')+'">🗓️</div></div>'
+   +'<div class="tarjeta naranja"><div><h4>AUSENCIAS</h4><div class="num">'+(R.asistencia.injustificadas+R.asistencia.justificadas)+'</div><div class="sub">'+R.asistencia.injustificadas+' injust. · '+R.asistencia.justificadas+' just.</div></div><div class="tIco na">🚫</div></div>'
+   +'<div class="tarjeta"><div><h4>TRABAJOS</h4><div class="num">'+R.entregadas+'/'+R.tareas.length+'</div><div class="sub">Entregados / asignados</div></div><div class="tIco az">📤</div></div>'
+   +'<div class="tarjeta '+(R.aprobado?'verde':'naranja')+'"><div><h4>PROMEDIO</h4><div class="num">'+(R.promedio==null?'—':R.promedio)+'</div><div class="sub">'+(R.aprobado?'Aprobado (≥ '+R.nmin+')':'En proceso (< '+R.nmin+')')+'</div></div><div class="tIco '+(R.aprobado?'ve':'na')+'">📊</div></div>'
+   +'</div>';
+  h+='<div class="panel"><h3>🗓️ Detalle de asistencia</h3><div class="tableWrap"><table>'
+   +'<tr><th>Días</th><th>Presentes</th><th>Atrasos</th><th>Aus. just.</th><th>Aus. injust.</th><th>% Asistencia</th><th>Valoración</th></tr>'
+   +'<tr><td>'+R.asistencia.total+'</td><td>'+R.asistencia.presentes+'</td><td>'+R.asistencia.atrasos+'</td><td>'+R.asistencia.justificadas+'</td><td>'+R.asistencia.injustificadas+'</td>'
+   +'<td><b>'+(R.asistencia.pct==null?'—':R.asistencia.pct+'%')+'</b> (mín. 80%)</td>'
+   +'<td>'+(R.asistencia.pct==null?'<span class="pill azul">SIN REGISTROS</span>':(R.asistencia.cumple?'<span class="pill verde">CUMPLE</span>':'<span class="pill rojo">NO CUMPLE</span>'))+'</td></tr></table></div>';
+  var ult=R.asistencia.registros.slice(-12).reverse();
+  if(ult.length) h+='<h3 style="margin-top:14px;font-size:14px">Últimos registros</h3><div class="tableWrap"><table><tr><th>Fecha</th><th>Estado</th><th>Docente</th></tr>'
+    +ult.map(function(a){ return '<tr><td>'+fechaCorta(a.fecha)+'</td><td>'+pillEstadoAsis(a.estado)+'</td><td>'+esc(a.docente||'—')+'</td></tr>'; }).join('')+'</table></div>';
+  h+='</div>';
+  h+='<div class="panel"><h3>📤 Presentación de trabajos y prácticas <span class="pill verde">HACER</span></h3>';
+  h+=R.tareas.length?'<div class="tableWrap"><table><tr><th>Trabajo / Práctica</th><th>Tipo</th><th>Fecha límite</th><th>Estado</th><th>Entregado</th><th>Calificación</th></tr>'
+    +R.trabajos.map(function(t){
+      var pill=t.estado==='ENTREGADA'?'verde':(t.estado==='VENCIDA'?'rojo':'naranja');
+      var cal=t.nota!=null?('<b>'+t.nota+'</b>/100 '+(t.dim?pillDim(t.dim):'')+(t.retro?'<br><small style="color:#888">💬 '+esc(t.retro)+'</small>':'')):'<span class="pill naranja">SIN CALIFICAR</span>';
+      return '<tr><td><b>'+esc(t.titulo)+'</b></td><td><span class="pill azul">'+esc(t.tipo)+'</span></td><td>'+fechaCorta(t.limite)+'</td><td><span class="pill '+pill+'">'+t.estado+(t.tarde?' (tarde)':'')+'</span></td><td>'+esc(t.entregado)+'</td><td>'+cal+'</td></tr>';
+    }).join('')+'</table></div>':'<div class="vacio">Sin trabajos asignados en el período</div>';
+  h+='</div>';
+  h+='<div class="panel"><h3>🧪 Exámenes <span class="pill rojo">SABER</span></h3>';
+  h+=R.examenes.length?'<div class="tableWrap"><table><tr><th>Examen</th><th>Fecha de nota</th><th>Calificación</th></tr>'
+    +R.examenes.map(function(x){
+      return '<tr><td><b>'+esc(x.titulo)+'</b></td><td>'+esc(x.fechaNota)+'</td><td>'+(x.nota==null?'<span class="pill naranja">SIN RENDIR</span>':'<b>'+x.nota+'</b>/100'+(x.retro?'<br><small style="color:#888">💬 '+esc(x.retro)+'</small>':''))+'</td></tr>';
+    }).join('')+'</table></div>':'<div class="vacio">Sin exámenes publicados</div>';
+  h+='</div>';
+  h+='<div class="panel"><h3>🧭 Calificación por dimensiones (ponderada — Cuadernos Pedagógicos ME Bolivia)</h3>'
+   +'<div class="tableWrap"><table><tr><th>Dimensión</th><th>Nota /100</th><th>Equivalencia</th><th>Peso</th><th>Origen</th></tr>'
+   +'<tr><td><b>SER</b></td><td>'+(R.ser==null?'—':'<b>'+R.ser+'</b>/100')+'</td><td><span class="pill azul">'+notaCual(R.ser)+'</span></td><td>'+R.pesos.ser+'%</td><td>'+esc(R.origen.ser)+'</td></tr>'
+   +'<tr><td><b>SABER</b></td><td>'+(R.saber==null?'—':'<b>'+R.saber+'</b>/100')+'</td><td><span class="pill rojo">'+notaCual(R.saber)+'</span></td><td>'+R.pesos.saber+'%</td><td>'+esc(R.origen.saber)+'</td></tr>'
+   +'<tr><td><b>HACER</b></td><td>'+(R.hacer==null?'—':'<b>'+R.hacer+'</b>/100')+'</td><td><span class="pill verde">'+notaCual(R.hacer)+'</span></td><td>'+R.pesos.hacer+'%</td><td>'+esc(R.origen.hacer)+'</td></tr>'
+   +'<tr><td><b>DECIDIR</b></td><td>'+(R.decidir==null?'—':'<b>'+R.decidir+'</b>/100')+'</td><td><span class="pill naranja">'+notaCual(R.decidir)+'</span></td><td>'+R.pesos.decidir+'%</td><td>'+esc(R.origen.decidir)+'</td></tr>'
+   +'<tr style="background:var(--azulclaro)"><td><b>PROMEDIO FINAL PONDERADO</b></td><td>'+(R.promedio==null?'—':'<b>'+R.promedio+'</b>/100')+'</td><td><span class="pill azul">'+notaCual(R.promedio)+'</span></td><td>100%</td><td>'+(R.aprobado?'<span class="pill verde">APROBADO (≥ '+R.nmin+')</span>':'<span class="pill naranja">EN PROCESO (&lt; '+R.nmin+')</span>')+'</td></tr>'
+   +'</table></div>'
+   +'<p class="repNota"><b>Escala:</b> todas las calificaciones se registran sobre 100. Promedio final = (Ser×'+R.pesos.ser + ' + Saber×'+R.pesos.saber+' + Hacer×'+R.pesos.hacer+' + Decidir×'+R.pesos.decidir+')/100. Equivalencia cualitativa de referencia: E=Excelente (90–100) · S=Satisfactorio (75–89) · M=Moderado (60–74) · I=Inicial (&lt;60). Aprobación: promedio ≥ '+R.nmin+' y asistencia mínima del 80%.</p></div>';
+  h+='<div class="panel"><h3>🗒️ Observaciones del docente</h3>';
+  h+=R.obsDoc.length?R.obsDoc.map(function(o){
+    return '<div class="obsItem"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:5px">'
+      +pillTipoObs(o.tipo)+'<small style="color:#888">'+fechaBonita(o.fecha)+' · '+esc(o.docente||'')+'</small></div>'
+      +'<p style="font-size:13.5px;line-height:1.6">'+esc(o.texto)+'</p></div>';
+  }).join(''):'<div class="vacio">Sin observaciones registradas en el período</div>';
+  h+='</div>';
+  h+='<div class="panel"><h3>💬 Observaciones y recomendaciones generales</h3><ul style="font-size:13px;line-height:1.8;padding-left:20px">'
+    +R.observaciones.map(function(o){ return '<li>'+esc(o)+'</li>'; }).join('')+'</ul></div>';
+  h+='<div class="panel"><div class="firmas"><div>MAESTRO(A)'+(R.docentes.length?' — '+esc(R.docentes[0]):'')+'</div><div>DIRECCIÓN — '+esc(c.linea2)+'</div><div>TUTOR(A) — '+esc(SESION.nombre)+'</div></div></div>';
+  cont.innerHTML=h;
+}
+
+/* ================= PDF ================= */
+function descargarPDF(){
+  if(!(window.jspdf&&window.jspdf.jsPDF)){ toast('Librería PDF no cargada; use «Imprimir»','err'); imprimirReporte(); return; }
+  try{
+    var R=calcularReporte((document.getElementById('padreTrimestre')||{}).value||'0');
+    var c=cfgActual();
+    var doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    if(typeof doc.autoTable!=='function'){ imprimirReporte(); return; }
+    var W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+    doc.setFillColor(11,61,145); doc.rect(0,0,W,26,'F');
+    doc.setFillColor(241,196,15); doc.rect(0,26,W,1.5,'F');
+    doc.setTextColor(255); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+    doc.text(String(c.linea1).toUpperCase(),W/2,10,{align:'center'});
+    doc.text('«'+String(c.linea2)+'»',W/2,16,{align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('INFORME DE EVALUACIÓN DEL RENDIMIENTO ESTUDIANTIL — CONTROL PARENTAL',W/2,21.5,{align:'center'});
+    doc.setTextColor(30);
+    var y=32;
+    doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.text('DATOS INFORMATIVOS',14,y); y+=6;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    [['Estudiante:',R.alumno],['Curso:',R.curso||'—'],['Gestión académica:',String(R.anio)],
+     ['Período evaluado:',R.periodoLabel],['Tutor / Padre de familia:',SESION.nombre],['Fecha del informe:',fechaBonita(ahora())]]
+     .forEach(function(d){ doc.text(String(d[0]),16,y); doc.text(String(d[1]),62,y); y+=5.2; });
+    y+=3;
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.text('ALERTAS DEL PERÍODO',14,y); y+=5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    R.alertas.forEach(function(a){
+      var lineas=doc.splitTextToSize(a,W-30);
+      if(y+lineas.length*4.3>H-40){ doc.addPage(); y=20; }
+      doc.text(lineas,15,y); y+=lineas.length*4.3+1.5;
+    });
+    y+=2;
+    doc.autoTable({startY:y,margin:{left:14,right:14},theme:'grid',styles:{fontSize:8.5,cellPadding:1.8},
+      headStyles:{fillColor:[11,61,145]},
+      head:[['ASISTENCIA (mínimo exigido: 80%)','Detalle']],
+      body:[['Días registrados',String(R.asistencia.total)],['Presentes',String(R.asistencia.presentes)],
+            ['Atrasos',String(R.asistencia.atrasos)],['Ausencias justificadas',String(R.asistencia.justificadas)],
+            ['Ausencias injustificadas',String(R.asistencia.injustificadas)],
+            ['Porcentaje',(R.asistencia.pct==null?'—':R.asistencia.pct+'%')+' — '+(R.asistencia.cumple?'CUMPLE':'NO CUMPLE')]]});
+    y=doc.lastAutoTable.finalY+7;
+    doc.autoTable({startY:y,margin:{left:14,right:14},theme:'grid',styles:{fontSize:8,cellPadding:1.8},
+      headStyles:{fillColor:[230,126,34]},
+      head:[['Trabajo / Práctica (HACER)','Tipo','Límite','Estado','Calif.','Retroalimentación']],
+      body:(R.trabajos.length?R.trabajos.map(function(t){return [t.titulo,t.tipo,fechaCorta(t.limite),t.estado+(t.tarde?' (tarde)':''),(t.nota==null?'—':t.nota+'/100'),t.retro||''];}):[['Sin trabajos asignados','','','','','']])});
+    y=doc.lastAutoTable.finalY+7;
+    doc.autoTable({startY:y,margin:{left:14,right:14},theme:'grid',styles:{fontSize:8.5,cellPadding:1.8},
+      headStyles:{fillColor:[192,57,43]},
+      head:[['Examen (SABER)','Fecha','Calificación']],
+      body:(R.examenes.length?R.examenes.map(function(x){return [x.titulo,x.fechaNota,(x.nota==null?'SIN RENDIR':x.nota+'/100')];}):[['Sin exámenes publicados','','']])});
+    y=doc.lastAutoTable.finalY+7;
+    doc.autoTable({startY:y,margin:{left:14,right:14},theme:'grid',styles:{fontSize:8.5,cellPadding:1.8},
+      headStyles:{fillColor:[39,174,96]},
+      head:[['Dimensión','Nota /100','Equivalencia','Peso','Origen']],
+      body:[['SER',(R.ser==null?'—':R.ser+'/100'),notaCual(R.ser),R.pesos.ser+'%',R.origen.ser],
+            ['SABER',(R.saber==null?'—':R.saber+'/100'),notaCual(R.saber),R.pesos.saber+'%',R.origen.saber],
+            ['HACER',(R.hacer==null?'—':R.hacer+'/100'),notaCual(R.hacer),R.pesos.hacer+'%',R.origen.hacer],
+            ['DECIDIR',(R.decidir==null?'—':R.decidir+'/100'),notaCual(R.decidir),R.pesos.decidir+'%',R.origen.decidir],
+            ['PROMEDIO FINAL',(R.promedio==null?'—':R.promedio+'/100'),notaCual(R.promedio),'100%',(R.aprobado?'APROBADO (≥ '+R.nmin+')':'EN PROCESO (< '+R.nmin+')')]]});
+    y=doc.lastAutoTable.finalY+7;
+    doc.autoTable({startY:y,margin:{left:14,right:14},theme:'grid',styles:{fontSize:8.5,cellPadding:1.8},
+      headStyles:{fillColor:[142,68,173]},
+      head:[['OBSERVACIONES DEL DOCENTE','Tipo','Fecha','Docente']],
+      body:(R.obsDoc.length?R.obsDoc.map(function(o){return [o.texto,o.tipo,fechaCorta(o.fecha),o.docente||'—'];}):[['Sin observaciones registradas','','','']])});
+    y=doc.lastAutoTable.finalY+6;
+    doc.setFontSize(7.5); doc.setTextColor(95,99,104);
+    doc.text(doc.splitTextToSize('Todas las calificaciones se registran sobre 100. Promedio final ponderado = (Ser×'+R.pesos.ser+' + Saber×'+R.pesos.saber+' + Hacer×'+R.pesos.hacer+' + Decidir×'+R.pesos.decidir+')/100; las dimensiones sin datos se re-normalizan. Equivalencia cualitativa: E=Excelente · S=Satisfactorio · M=Moderado · I=Inicial. Aprobación: promedio ≥ '+R.nmin+' y asistencia mínima 80% (Cuadernos Pedagógicos — Ministerio de Educación de Bolivia).',W-28),14,y);
+    y+=13;
+    doc.setFontSize(9.5); doc.setTextColor(30); doc.setFont('helvetica','bold');
+    doc.text('OBSERVACIONES Y RECOMENDACIONES GENERALES',14,y); y+=5.5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    R.observaciones.forEach(function(o){
+      var lineas=doc.splitTextToSize('• '+o,W-30);
+      if(y+lineas.length*4.3>H-42){ doc.addPage(); y=20; }
+      doc.text(lineas,15,y); y+=lineas.length*4.3+1.5;
+    });
+    if(y>H-45){ doc.addPage(); y=30; } else { y=H-45; }
+    doc.setDrawColor(60);
+    doc.line(20,y+16,80,y+16); doc.text('MAESTRO(A)'+(R.docentes.length?' — '+R.docentes[0]:''),50,y+21,{align:'center'});
+    doc.line(W/2-30,y+16,W/2+30,y+16); doc.text('DIRECCIÓN — '+c.linea2,W/2,y+21,{align:'center'});
+    doc.line(W-80,y+16,W-20,y+16); doc.text('TUTOR(A) — '+SESION.nombre,W-50,y+21,{align:'center'});
+    doc.save('Informe_'+R.alumno.replace(/\s+/g,'_')+'.pdf');
+    toast('PDF generado correctamente','ok');
+  }catch(err){ toast('Error al generar PDF: '+err,'err'); }
+}
+function imprimirReporte(){ window.print(); }
+
+/* ================= CICLO GENERAL ================= */
+function refrescarTodo(){
+  try{
+    if(!SESION) return;
+    if(SESION.rol!=='tutor') pintarDashboard();
+    if(SESION.rol!=='tutor'){ pintarTareas(); pintarExamenes(); pintarEntregas(); pintarReportes(); }
+    var va=document.getElementById('vista-asistencia');
+    if(va&&va.style.display!=='none'&&SESION.rol==='docente') cargarListaAsistencia();
+    var vp=document.getElementById('vista-padre');
+    if(vp&&vp.style.display!=='none'&&SESION.rol==='tutor') pintarReportePadre();
+    var vo=document.getElementById('vista-observaciones');
+    if(vo&&vo.style.display!=='none'&&SESION.rol==='docente') pintarObs();
+    var vm=document.getElementById('vista-mensajes');
+    if(vm&&vm.style.display!=='none'&&SESION.rol!=='estudiante') pintarMensajes();
+    actualizarBadgeMensajes();
+  }catch(e){}
+}
+
+/* ================= INICIALIZACIÓN ================= */
+aplicarIdentidad();
+cargarConfigRemota();
+if(SESION&&SESION.usuario){ entrar(); }
+setInterval(function(){
+  if(SESION&&(SESION.rol==='tutor'||SESION.rol==='docente')){
+    cargarMensajesRemota(); cargarObsRemota();
+  }
+},60000);
+</script>
+</body>
+</html>
