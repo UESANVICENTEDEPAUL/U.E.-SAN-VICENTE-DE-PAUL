@@ -349,7 +349,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
               </div>
             </div>
             <div>
-              <div class="campo"><label>Curso destino</label><select id="tCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Curso destino</label><select id="tCurso"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Fecha y hora límite</label><input id="tLimite" type="datetime-local"></div>
               <div class="campo"><label>Puntaje máximo (referencial)</label><input id="tPuntos" type="number" value="100" min="1" inputmode="numeric"></div>
               <div class="campo"><label>📎 Adjuntar archivo (máx 30 MB)</label><input type="file" id="tArchivo"></div>
@@ -371,7 +371,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
           <div class="grid2">
             <div>
               <div class="campo"><label>Título del examen</label><input id="eTitulo" placeholder="ej: Examen de Biología — Unidad 2"></div>
-              <div class="campo"><label>Curso</label><select id="eCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Curso</label><select id="eCurso"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Duración (minutos)</label><input id="eDuracion" type="number" value="30" min="5" inputmode="numeric"></div>
             </div>
             <div>
@@ -448,11 +448,18 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
                   <option value="tutor">Tutor / Padre de familia</option>
                 </select>
               </div>
-              <div class="campo" id="campoCurso"><label>Curso (solo estudiantes)</label><select id="rCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo" id="campoCurso"><label>Curso (solo estudiantes)</label><select id="rCurso"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo" id="campoHijo" style="display:none"><label>Estudiante vinculado (usuario del hijo/a)</label><input id="rHijo" placeholder="ej: jpereira" autocomplete="off"></div>
               <button class="btn btn-verde" onclick="registrarUsuario()">REGISTRAR USUARIO</button>
             </div>
           </div>
+        </div>
+        <div class="panel">
+          <h3>🏫 Cursos</h3>
+          <div class="grid2"><div>
+            <div class="campo"><label>Nuevo curso</label><input id="nuevoCurso" placeholder='ej: 4to "A"' autocomplete="off"></div>
+            <button class="btn btn-verde" onclick="agregarCurso()">AGREGAR CURSO</button>
+          </div><div><div id="listaCursos"></div></div></div>
         </div>
         <div class="panel">
           <h3>📋 Usuarios registrados en Google Sheets</h3>
@@ -466,7 +473,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
           <h3>🗓️ Registro diario de asistencia (Docente)</h3>
           <div class="grid2">
             <div>
-              <div class="campo"><label>Curso</label><select id="asCurso"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+              <div class="campo"><label>Curso</label><select id="asCurso"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Fecha</label><input id="asFecha" type="date"></div>
               <button class="btn btn-primario" onclick="cargarListaAsistencia()">CARGAR LISTA</button>
             </div>
@@ -518,7 +525,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
           <div class="grid2">
             <div>
               <div class="campo"><label>Curso</label>
-                <select id="obsCurso" onchange="poblarObsEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+                <select id="obsCurso" onchange="poblarObsEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Estudiante</label><select id="obsEstudiante" onchange="pintarObs();pintarValoraciones()"></select></div>
             </div>
             <div>
@@ -537,7 +544,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
           <div class="grid2">
             <div>
               <div class="campo"><label>Curso</label>
-                <select id="valCurso" onchange="poblarValEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+                <select id="valCurso" onchange="poblarValEstudiantes()"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Estudiante</label><select id="valEstudiante" onchange="pintarValoraciones()"></select></div>
             </div>
             <div>
@@ -560,7 +567,7 @@ pre.codigo{background:#0f172a;color:#a5f3a5;padding:14px;border-radius:8px;font-
           <div class="grid2">
             <div>
               <div class="campo" id="campoMsgCurso"><label>Curso (docente)</label>
-                <select id="msgCurso" onchange="poblarMsgDestinatarios()"><option>6to "A"</option><option>6to "B"</option><option>5to "A"</option><option>5to "B"</option></select></div>
+                <select id="msgCurso" onchange="poblarMsgDestinatarios()"><option>6to "A"</option><option>6to "B"</option><option>6to "C"</option><option>5to "A"</option><option>5to "B"</option><option>5to "C"</option></select></div>
               <div class="campo"><label>Destinatario</label><select id="msgPara"></select></div>
             </div>
             <div>
@@ -2100,6 +2107,30 @@ setInterval(function(){
     cargarMensajesRemota(); cargarObsRemota();
   }
 },60000);
+</script>
+<script>
+var CURSOS_BASE=['6to "A"','6to "B"','6to "C"','5to "A"','5to "B"','5to "C"'];
+var SEL_CURSOS=['tCurso','eCurso','rCurso','asCurso','obsCurso','valCurso','msgCurso'];
+function cargarCursos(){ try{var c=JSON.parse(localStorage.getItem('cursosEscuela'));if(Array.isArray(c)&&c.length)return c;}catch(e){} return CURSOS_BASE.slice(); }
+function guardarCursos(c){ localStorage.setItem('cursosEscuela',JSON.stringify(c)); }
+function pintarCursos(){
+  var c=cargarCursos();
+  SEL_CURSOS.forEach(function(id){ var el=document.getElementById(id); if(!el)return; var v=el.value;
+    el.innerHTML=c.map(function(x){var o=document.createElement('option');o.textContent=x;return o.outerHTML;}).join('');
+    if(c.indexOf(v)>=0) el.value=v; });
+  var l=document.getElementById('listaCursos'); if(l){ l.innerHTML='';
+    c.forEach(function(x,i){ var d=document.createElement('div'); d.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #eee';
+      var sp=document.createElement('span'); sp.textContent=x; var b=document.createElement('button'); b.className='btn'; b.style.padding='4px 10px'; b.textContent='Quitar';
+      b.onclick=function(){ if(!confirm('¿Quitar el curso '+x+'?'))return; var cc=cargarCursos(); cc.splice(i,1); guardarCursos(cc); pintarCursos(); };
+      d.appendChild(sp); d.appendChild(b); l.appendChild(d); }); }
+}
+function agregarCurso(){
+  var inp=document.getElementById('nuevoCurso'), v=inp.value.trim(); if(!v){alert('Escriba el nombre del curso');return;}
+  var c=cargarCursos(); if(c.some(function(x){return x.toLowerCase()===v.toLowerCase();})){alert('Ese curso ya existe');return;}
+  c.push(v); guardarCursos(c); inp.value=''; pintarCursos();
+  if(typeof toast==='function') toast('Curso '+v+' agregado','ok');
+}
+pintarCursos();
 </script>
 </body>
 </html>
